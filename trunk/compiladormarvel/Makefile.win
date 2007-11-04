@@ -1,0 +1,54 @@
+# Project: Marvel
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = main.o Erro.o Anallex.o AnalSint.o ClassesArvoreAbstrata.o ImpressaoArvoreAbstrata.o Buffer.o TabSimbolos.o ../../MarvelSintatico/Marvel/VerificadorEscopo.o $(RES)
+LINKOBJ  = main.o Erro.o Anallex.o AnalSint.o ClassesArvoreAbstrata.o ImpressaoArvoreAbstrata.o Buffer.o TabSimbolos.o ../../MarvelSintatico/Marvel/VerificadorEscopo.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib"  
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
+BIN  = Marvel.exe
+CXXFLAGS = $(CXXINCS)  
+CFLAGS = $(INCS)  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before Marvel.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "Marvel.exe" $(LIBS)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+Erro.o: Erro.cpp
+	$(CPP) -c Erro.cpp -o Erro.o $(CXXFLAGS)
+
+Anallex.o: Anallex.cpp
+	$(CPP) -c Anallex.cpp -o Anallex.o $(CXXFLAGS)
+
+AnalSint.o: AnalSint.cpp
+	$(CPP) -c AnalSint.cpp -o AnalSint.o $(CXXFLAGS)
+
+ClassesArvoreAbstrata.o: ClassesArvoreAbstrata.cpp
+	$(CPP) -c ClassesArvoreAbstrata.cpp -o ClassesArvoreAbstrata.o $(CXXFLAGS)
+
+ImpressaoArvoreAbstrata.o: ImpressaoArvoreAbstrata.cpp
+	$(CPP) -c ImpressaoArvoreAbstrata.cpp -o ImpressaoArvoreAbstrata.o $(CXXFLAGS)
+
+Buffer.o: Buffer.cpp
+	$(CPP) -c Buffer.cpp -o Buffer.o $(CXXFLAGS)
+
+TabSimbolos.o: TabSimbolos.cpp
+	$(CPP) -c TabSimbolos.cpp -o TabSimbolos.o $(CXXFLAGS)
+
+../../MarvelSintatico/Marvel/VerificadorEscopo.o: ../../MarvelSintatico/Marvel/VerificadorEscopo.cpp
+	$(CPP) -c ../../MarvelSintatico/Marvel/VerificadorEscopo.cpp -o ../../MarvelSintatico/Marvel/VerificadorEscopo.o $(CXXFLAGS)

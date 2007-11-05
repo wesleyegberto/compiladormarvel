@@ -23,7 +23,7 @@ typedef struct {
     int   tamanho;                    // Tamanho atual do array
 } ARRAY_LEXEMAS;
 
-// Inicializa a Tabela de Simbolos
+// Inicializa a Tabela de Simbolos S
 void inicializaTabSimbolos();
 
 // Finaliza a Tabela de Simbolos

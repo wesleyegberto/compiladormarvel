@@ -39,9 +39,6 @@ void VerificadorEscopo::visit(CallNode* callNode){
 
 }
 
-void VerificadorEscopo::visit(ComparationOpNode* comparationNode){
-
-}
 
 void VerificadorEscopo::visit(ExpressionListNode* expressionListNode){
 

@@ -5,6 +5,7 @@
 #include "TabSimbolos.h"
 #include <stdio.h>
 
+
 #ifndef VERIFICADORESCOPO_H
 #define VERIFICADORESCOPO_H
 
@@ -42,7 +43,6 @@ class VerificadorEscopo : public Visitor {
               void visit(IdListNode* idListNode);
               void visit(NumberNode* numberNode);
               void visit(LiteralNode* literalNode);
-              void visit(ComparationOpNode* comparationNode);
               
 
               void iniciaEscopo();

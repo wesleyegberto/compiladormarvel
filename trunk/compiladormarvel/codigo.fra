@@ -13,6 +13,9 @@ FRAGMENT calcula2; "TESTE" ENDFRAGMENT;
 
 FRAGMENT teste = 2; teste2 = 2 ENDFRAGMENT;
 
+s = 1 + 2;
+
+
 s = batatinha && nasce || d;
 S = 1 / 2;
 D = 7 >= 1 -- 2 ;

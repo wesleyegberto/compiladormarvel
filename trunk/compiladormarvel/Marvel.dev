@@ -1,7 +1,7 @@
 [Project]
 FileName=Marvel.dev
 Name=Marvel
-UnitCount=20
+UnitCount=24
 Type=1
 Ver=1
 ObjFiles=
@@ -229,7 +229,7 @@ AutoIncBuildNr=0
 
 [Unit19]
 FileName=codigo.fra
-Folder=Marvel
+Folder=
 Compile=0
 Link=0
 Priority=1000
@@ -238,7 +238,7 @@ BuildCmd=
 
 [Unit20]
 FileName=codigo2.fra
-Folder=Marvel
+Folder=
 Compile=0
 Link=0
 Priority=1000
@@ -246,7 +246,37 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit22]
-FileName=VerificadorEscopo.h
+FileName=VerificadorVariaveis.cpp
+CompileCpp=1
+Folder=Analisador Semantico
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit21]
+FileName=VerificadorVariaveis.h
+CompileCpp=1
+Folder=Analisador Semantico
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit23]
+FileName=VerificadorTipos.h
+CompileCpp=1
+Folder=Analisador Semantico
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit24]
+FileName=VerificadorTipos.cpp
 CompileCpp=1
 Folder=Analisador Semantico
 Compile=1

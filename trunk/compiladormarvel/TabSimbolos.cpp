@@ -93,6 +93,7 @@ int insereTabSimbolos(int token, char *lexema) {
         return 0;
     }
 
+
     int index = hash(lexema);                            // Retorna o hash do lexema
 
     registro = (REGISTRO *) calloc(1, sizeof(REGISTRO)); // Aloca espaço para o novo registro

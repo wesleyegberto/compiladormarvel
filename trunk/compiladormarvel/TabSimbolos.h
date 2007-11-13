@@ -12,6 +12,8 @@
 typedef struct Registro {
     int              indiceLexema;    // Indice do lexema no array de lexemas
     int              token;           // Token do registro
+    int              escopo;           // Escopo do registro
+    int              ativo;           // Registro ativo ou não
     struct Registro  *prox;           // Proximo registro
 } REGISTRO;
 
@@ -41,6 +43,9 @@ REGISTRO *buscaTabSimbolos(char*);
 
 // Retorna o indice do lexema buscado
 int retornaIndiceLexemaAtual();
+
+// Retorna o registro atual
+REGISTRO *retornaRegistroAtual();
 
 // Retorna o char correspondente a posiçao pos
 char* retornaCharToken(int pos);

@@ -189,7 +189,6 @@ int proxToken(){
                 if (!isalnum(c)) {
                     state = 0;                      
                     devolveCaractere();
-                    
                     if (!insereTabSimbolos(ID, retornaLexema())) return buscaTabSimbolos(retornaLexema())->token;
                     return ID;                               // Retorna o token e seu valor
                 }

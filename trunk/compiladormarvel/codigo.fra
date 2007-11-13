@@ -2,24 +2,22 @@ FLOAT a;
 FLOAT b;
 
 FRAGMENT INTEGER calcula;
-    INTEGER FLOAT PARAM k;
-    FLOAT PARAM h;
-    WRITE (k,T," foram calculados")
+    PARAM FLOAT k;
+    PARAM FLOAT h;
+    FLOAT T;
+    T = h + constante1;
+    WRITE (k," ",T," foram calculados")
 ENDFRAGMENT;
 
-FRAGMENT FLOAT calcula; 4 ENDFRAGMENT;
+FRAGMENT FLOAT constante1; 4 ENDFRAGMENT;
 
-FRAGMENT calcula2; "TESTE" ENDFRAGMENT;
+FRAGMENT constante2; "TESTE" ENDFRAGMENT;
 
-FRAGMENT teste = 2; teste2 = 2 ENDFRAGMENT;
+FRAGMENT a = 2; b = 2 ENDFRAGMENT;
 
-s = 1 + 2;
+INTEGER s;
 
+s = 1 + b;
 
-s = batatinha && nasce || d;
-S = 1 / 2;
-D = 7 >= 1 -- 2 ;
-
-x[2] = y < (u*7);
-soma(calcula(k,7,5,4))
+calcula(s,a)
 

@@ -27,6 +27,7 @@ class VerificadorEscopo : public Visitor {
               void visit(FragCallNode* fragCallNode);
               void visit(ReadNode* readNode);
               void visit(WriteNode* writeNode);
+              void visit(ConstantNode* constantNode);
               void visit(ExpressionListNode* expressionListNode);
               void visit(CallNode* callNode);
               void visit(ArrayNode* arrayNode);
@@ -47,8 +48,8 @@ class VerificadorEscopo : public Visitor {
 
               void iniciaEscopo();
               void terminaEscopo();
-              void insereEscopo();
-              void retornaEscopo();
+              void insereEscopo(REGISTRO *entrada);
+              int retornaEscopo(int nivel);
                                        
 };
 #endif

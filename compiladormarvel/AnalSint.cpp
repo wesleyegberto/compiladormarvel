@@ -98,7 +98,8 @@ StatementNode* statement(){
 printf("Statement\n");
       if (lookahead == ID){
             int lexema = retornaIndiceLexemaAtual();
-            IdNode* idStm = new IdNode(lexema);
+            REGISTRO *regi = retornaRegistroAtual();
+            IdNode* idStm = new IdNode(lexema, regi);
             match(ID, followStatement, &lexema);       
                return statementDuasLinhas(idStm);         
       }else if (lookahead == IF){
@@ -212,7 +213,8 @@ StatementNode* fragment(){
        // Produção ID; Statement_List ou produção ID; LITERAL
        }else if (lookahead == ID ){
                int lexema = retornaIndiceLexemaAtual();
-               IdNode* idFrgm = new IdNode(lexema);
+               REGISTRO *regi = retornaRegistroAtual();
+               IdNode* idFrgm = new IdNode(lexema,regi);
                match(ID, followFragment, &lexema); 
                if (lookahead == SMCLN)    match(SMCLN,followFragment, NULL);       
             //Não é constante
@@ -390,7 +392,8 @@ IdListNode* idList(){
        printf("Id_List\n");   
    if (lookahead == ID ){
      int id = retornaIndiceLexemaAtual();  
-     IdNode* idN = new IdNode(id);
+     REGISTRO *regi= retornaRegistroAtual();
+     IdNode* idN = new IdNode(id,regi);
      match(ID,followId_List, &id);
      IdListNode* idListVar = idListLinha();
      if (idListVar == NULL) return new IdListNode(idN,idListVar);
@@ -407,7 +410,8 @@ IdListNode* idListLinha(){
      if (lookahead == COMMA ){
           match(COMMA,followId_ListLinha, NULL);
           int id2 = retornaIndiceLexemaAtual();
-          IdNode* idN2 = new IdNode(id2);
+          REGISTRO *regi2 = retornaRegistroAtual();
+          IdNode* idN2 = new IdNode(id2, regi2);
           match(ID,followId_ListLinha, &id2);
           IdListNode* idListLinhaVar2 = idListLinha();           
           return new IdListNode(idN2,idListLinhaVar2);
@@ -598,7 +602,8 @@ ExpressionNode* factor(){
     printf("Factor\n");                
        if (lookahead == ID ){
            int fIdIndex = retornaIndiceLexemaAtual();
-           IdNode* fId = new IdNode(fIdIndex);
+           REGISTRO *fregi = retornaRegistroAtual();
+           IdNode* fId = new IdNode(fIdIndex,fregi);
            match(ID,followFactor, &fIdIndex);
            return factorLinha(fId);
        }else if (lookahead == NOT ){
@@ -639,12 +644,12 @@ ExpressionNode* factorLinha(IdNode* idN){
 // Função que casa o token lido com o esperado
 // ou faz a sincronização caso o token não case
 void match(int token, int follow[], int* iLexema){
+    
     if(iLexema) printf("Match: %s.%s\n", retornaLiteralToken(token), retornaCharToken(*iLexema));
     else        printf("Match: %s\n", retornaLiteralToken(token));
-    
     if(lookahead == token) { // token casou com o esperado
           // Pega o proximo token esperado        
-          lookahead = proxToken();
+                   if (token != EOF) lookahead = proxToken();
     }
     else{ //token encontrado não é o esperado
         if(lookaheadPertenceFollow(follow) == 1 ) {                       //se o proximo token pertence ao follow da produção atual

@@ -47,5 +47,6 @@ class VerificadorTipos : public Visitor {
               void visit(NumberNode* numberNode);
               void visit(LiteralNode* literalNode);
 
+
 };
 #endif

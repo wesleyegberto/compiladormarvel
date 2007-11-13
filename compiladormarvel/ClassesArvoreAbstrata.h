@@ -100,8 +100,9 @@ class ModifierListNode{
 class IdNode : public ExpressionNode {
     public:
         int     id;
+        struct Registro  *registro;
     public:
-        IdNode(int i);
+        IdNode(int i, struct Registro  *reg);
         void accept(Visitor* visitor) ;
 };
 #endif

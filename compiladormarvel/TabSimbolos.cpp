@@ -4,12 +4,14 @@
 REGISTRO *tabelaSimbolos[HASHPRIME];
 ARRAY_LEXEMAS arrayLexemas;
 int indiceLexemaAtual;
+REGISTRO *registroAtual;
 
 // Inicializa a Tabela de Simbolos
 void inicializaTabSimbolos() {
     arrayLexemas.caracteres = (char *) calloc(LEXINI, sizeof(char));
     arrayLexemas.tamanho    = LEXINI;
     arrayLexemas.proxIndice = 0;
+    registroAtual = NULL;
     
     // Inicializa tabela de Simbolos com valores nulos
     int i;
@@ -89,10 +91,12 @@ int insereTabSimbolos(int token, char *lexema) {
     // ultimo lexema lido
     REGISTRO *registro;
     if((registro = buscaTabSimbolos(lexema)) != NULL) {
-        indiceLexemaAtual = registro->indiceLexema;      // Armazena o indice do lexema lido
-        return 0;
+       indiceLexemaAtual = registro->indiceLexema;      // Armazena o indice do lexema lido
+       if (registro->token != ID) return 0;
+    } else {
+       indiceLexemaAtual = arrayLexemas.proxIndice;
+       insereArrayLexemas(lexema);
     }
-
 
     int index = hash(lexema);                            // Retorna o hash do lexema
 
@@ -103,11 +107,12 @@ int insereTabSimbolos(int token, char *lexema) {
     }
 
     // Preenche o registro
-    registro->indiceLexema = arrayLexemas.proxIndice;
-    insereArrayLexemas(lexema);
+    registro->indiceLexema = indiceLexemaAtual;
     registro->token = token;
+    registro->ativo = 0;
+    registro->escopo = -1;
     registro->prox = tabelaSimbolos[index];              // Aponta o registro atual como próximo
-    
+    registroAtual = registro;
     tabelaSimbolos[index] = registro;                    // Coloca o registro no inicio da fila
     
     indiceLexemaAtual = registro->indiceLexema;          // Armazena indice do lexema atual
@@ -144,6 +149,12 @@ int retornaIndiceLexemaAtual() {
     return indiceLexemaAtual;
 }
 
+
+// Retorna o registro atual
+REGISTRO *retornaRegistroAtual() {
+   // printf("%s",&arrayLexemas.caracteres[indiceLexemaAtual] );
+    return registroAtual;
+}
 
 // Retorna o char correspondente a posiçao pos
 char* retornaCharToken(int pos){

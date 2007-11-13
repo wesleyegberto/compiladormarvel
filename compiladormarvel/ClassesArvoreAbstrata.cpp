@@ -121,7 +121,7 @@ ArrayNode::~ArrayNode() {
 }
 
 
-IdNode::IdNode(int i) : id(i) {}
+IdNode::IdNode(int i, struct Registro  *reg) : id(i), registro(reg) {}
 void IdNode::accept(Visitor* v) {v->visit(this);}
 
 LiteralNode::LiteralNode(int l) : literal(l) {}

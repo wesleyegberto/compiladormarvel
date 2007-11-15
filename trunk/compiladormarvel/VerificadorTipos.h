@@ -11,8 +11,13 @@
 #ifndef VERIFICADORTIPOS_H
 #define VERIFICADORTIPOS_H
 
+
+
 // Define os atributos e os métodos visitantes
 class VerificadorTipos : public Visitor {
+      
+      public:
+             int tipo;
 
       public:
              // Declaração do construtor

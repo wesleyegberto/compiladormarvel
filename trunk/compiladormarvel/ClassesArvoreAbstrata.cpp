@@ -127,7 +127,7 @@ void IdNode::accept(Visitor* v) {v->visit(this);}
 LiteralNode::LiteralNode(int l) : literal(l) {}
 void LiteralNode::accept(Visitor* v) {v->visit(this);}
 
-NumberNode::NumberNode(int n) : number(n) {}
+NumberNode::NumberNode(int n, struct Registro *reg) : number(n), registro(reg) {}
 void NumberNode::accept(Visitor* v) {v->visit(this);}
 
 RelOpNode::RelOpNode(int o, ExpressionNode* en1, ExpressionNode* en2) : op(o), expressionNode1(en1), expressionNode2(en2) {}

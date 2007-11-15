@@ -15,6 +15,7 @@ typedef struct Registro {
     int              escopo;           // Escopo do registro
     int              ativo;           // Registro ativo ou não
     struct Registro  *prox;           // Proximo registro
+    int              tipo;
 } REGISTRO;
 
 

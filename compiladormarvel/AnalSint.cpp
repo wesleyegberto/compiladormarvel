@@ -204,7 +204,7 @@ StatementNode* fragment(){
                   int fragNumIndex = retornaIndiceLexemaAtual();
                   match(NUM,followFragment, &fragNumIndex);
                   match(ENDFRAGMENT,followFragment, NULL);
-                  return new ConstantNode(nmdecl, new NumberNode(fragNumIndex)); 
+                  return new ConstantNode(nmdecl, new NumberNode(fragNumIndex, retornaRegistroAtual())); 
               }else{
                          StatementListNode* stmtListLinha = statementListLinha(statement());
                          stmtLFrag = new StatementListNode(nmdecl,stmtListLinha);
@@ -612,7 +612,7 @@ ExpressionNode* factor(){
        }else if (lookahead == NUM ){
            int fNumIndex = retornaIndiceLexemaAtual();
            match(NUM,followFactor, &fNumIndex);
-           return new NumberNode(fNumIndex);
+           return new NumberNode(fNumIndex, retornaRegistroAtual());
        }else if (lookahead == OPENPAR ){
            match(OPENPAR,followFactor, NULL);
            ExpressionNode* expreP = expression();

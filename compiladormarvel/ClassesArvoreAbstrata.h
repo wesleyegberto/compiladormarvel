@@ -124,9 +124,10 @@ class LiteralNode : public ExpressionNode {
 
 class NumberNode : public ExpressionNode {
     public:
-        int     number;
+        int               number;
+        struct Registro  *registro;
     public:
-        NumberNode(int n);
+        NumberNode(int n, struct Registro *reg);
         void accept(Visitor* visitor) ;
 };
 #endif
@@ -153,6 +154,7 @@ class ExpressionListNode{
     public:
         ExpressionNode*       expressionNode;
         ExpressionListNode*   expressionListNode;
+        int                   tipoExpressionListNode;
     public:
         ExpressionListNode(ExpressionNode* en, ExpressionListNode* eln);
         ExpressionListNode(ExpressionNode* en);

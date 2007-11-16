@@ -5,8 +5,8 @@
 */
 #include "Visitor.h"
 #include "ClassesArvoreAbstrata.h"
-#include "TabSimbolos.h"
 #include "Erro.h"
+#include "Tokens.h"
 #include <stdio.h>
 
 #ifndef VERIFICADORTIPOS_H

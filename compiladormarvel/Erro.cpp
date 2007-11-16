@@ -17,8 +17,12 @@
 #define MSG_ERRO_EOF_SINTATICO(linha)               fprintf(stderr, "\nFIM DE ARQUIVO NAO ESPERADO NA LINHA %d.\n", linha)
 
 /* Definicao de mensagens para erro durante analise semântica */
-#define MSG_TIPOS_INCOMPATIVEIS_OPERACAO(operacao, linha)     fprintf(stderr, "\nOS TIPOS SÃO INCOMPATÍVEIS COM A OPERAÇÃO %s NA LINHA %d.\n", linha, operacao)
-#define MSG_TIPOS_INCOMPATIVEIS(linha)                              fprintf(stderr, "\nOS TIPOS DA OPERAÇÃO NA LINHA %d SÃO INCOMPATÍVEIS ENTRE SI.\n",linha)
+#define MSG_TIPOS_INCOMPATIVEIS_OPERACAO(operacao, linha)     fprintf(stderr, "\nERRO: OS TIPOS SÃO INCOMPATÍVEIS COM A OPERAÇÃO %s NA LINHA %d.\n",operacao, linha)
+#define MSG_TIPOS_INCOMPATIVEIS(linha)                        fprintf(stderr, "\nERRO: OS TIPOS DA OPERAÇÃO NA LINHA %d SÃO INCOMPATÍVEIS ENTRE SI.\n",linha)
+#define MSG_TIPO_INCOMPATIVEL_INDICE_ARRAY(linha)             fprintf(stderr, "\nERRO: NA LINHA %d, O TIPO RETORNADO PELA EXPRESSAO PARA REFERENCIA DO VETOR NÃO É INTEIRO.\n", linha)
+#define MSG_TIPO_INCOMPATIVEL_ATRIBUICAO(linha)               fprintf(stderr, "\nERRO: A ATRIBUIÇÃO NÃO ESTÁ SENDO REALIZADA COM EXPRESSÕES DO MESMO TIPO NA LINHA %d.\n", linha)
+#define MSG_ERRO_EXPRESSAO_NAO_BOOLEANA(linha)                fprintf(stderr, "\nERRO: A CLÁUSULA DA CONDIÇÃO IF NA LINHA %d NÃO RETORNA VALOR BOOLEANO.\n", linha)
+#define MSG_ERRO_COMANDO_SEM_EXPRESSAO(operacao, linha)       fprintf(stderr, "\nERRO: COMANDO %s SEM EXPRESSÃO NA LINHA %d.\n", operacao, linha)
 
 //Envia uma mensagem de erro para stderr referente a erro lexico
 void emiteErroLexico(int codigo, int linha){
@@ -72,8 +76,20 @@ void emiteErroSemantico(int codigo, char* operacao, int linha){
          case(ERRO_INCOMPATIBILIDADE_TIPO):
             MSG_TIPOS_INCOMPATIVEIS(linha);
             break;
-         case(ERRO_TIPO_NAO_ESPERADOS_OPERACAO):
+         case(ERRO_TIPO_NAO_ESPERADO_OPERACAO):
             MSG_TIPOS_INCOMPATIVEIS_OPERACAO(operacao, linha);
+            break;
+         case(ERRO_TIPO_INCOMPATIVEL_INDICE_ARRAY):
+            MSG_TIPO_INCOMPATIVEL_INDICE_ARRAY(linha);
+            break;
+         case(ERRO_TIPO_INCOMPATIVEL_ATRIBUICAO):
+            MSG_TIPO_INCOMPATIVEL_ATRIBUICAO(linha);                                                                                                                                     
+            break;
+         case(ERRO_EXPRESSAO_NAO_BOOLEANA):
+            MSG_ERRO_EXPRESSAO_NAO_BOOLEANA(linha);
+            break;
+         case(ERRO_COMANDO_SEM_EXPRESSAO):
+            MSG_ERRO_COMANDO_SEM_EXPRESSAO(operacao, linha);
             break;
          } // end switch
 } // fim da função

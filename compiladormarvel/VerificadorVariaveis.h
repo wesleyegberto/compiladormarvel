@@ -4,8 +4,6 @@
   das variáveis é verificada).
 */
 #include "Visitor.h"
-#include "ClassesArvoreAbstrata.h"
-#include "TabSimbolos.h"
 #include <stdio.h>
 
 #ifndef VERIFICADORVARIAVEIS_H

@@ -1,33 +1,33 @@
 [Project]
 FileName=Marvel.dev
 Name=Marvel
-UnitCount=26
+UnitCount=28
 Type=1
 Ver=1
 ObjFiles=
 Includes=
 Libs=
-PrivateResource=
+PrivateResource=Marvel_private.rc
 ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
 Linker=
 IsCpp=1
-Icon=
+Icon=Marvel.ico
 ExeOutput=
 ObjectOutput=
 OverrideOutput=0
-OverrideOutputName=
+OverrideOutputName=Marvel.exe
 HostApplication=
-Folders="Analisador Lexico","Analisador Semantico","Analisador Sintatico","Arvore Sintaxe Abstrata",Buffer,Erro,"Tabela de Simbolos",Visitor
+Folders="Analisador Lexico","Analisador Semantico","Analisador Semantico/Escopo","Analisador Semantico/Tipo","Analisador Semantico/Variavel","Analisador Sintatico","Arvore Sintaxe Abstrata",Buffer,Erro,"Tabela de Simbolos",Visitor
 CommandLine=codigo.fra
 UseCustomMakefile=0
 CustomMakefile=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=
+CompilerSettings=0000000000000001000000
 
 [Unit1]
 FileName=main.cpp
@@ -248,7 +248,7 @@ BuildCmd=
 [Unit22]
 FileName=VerificadorVariaveis.cpp
 CompileCpp=1
-Folder=Analisador Semantico
+Folder=Analisador Semantico/Variavel
 Compile=1
 Link=1
 Priority=1000
@@ -258,7 +258,7 @@ BuildCmd=
 [Unit21]
 FileName=VerificadorVariaveis.h
 CompileCpp=1
-Folder=Analisador Semantico
+Folder=Analisador Semantico/Variavel
 Compile=1
 Link=1
 Priority=1000
@@ -268,7 +268,7 @@ BuildCmd=
 [Unit23]
 FileName=VerificadorTipos.h
 CompileCpp=1
-Folder=Analisador Semantico
+Folder=Analisador Semantico/Tipo
 Compile=1
 Link=1
 Priority=1000
@@ -278,7 +278,7 @@ BuildCmd=
 [Unit24]
 FileName=VerificadorTipos.cpp
 CompileCpp=1
-Folder=Analisador Semantico
+Folder=Analisador Semantico/Tipo
 Compile=1
 Link=1
 Priority=1000
@@ -288,7 +288,7 @@ BuildCmd=
 [Unit25]
 FileName=VerificadorEscopo.cpp
 CompileCpp=1
-Folder=Analisador Semantico
+Folder=Analisador Semantico/Escopo
 Compile=1
 Link=1
 Priority=1000
@@ -297,6 +297,26 @@ BuildCmd=
 
 [Unit26]
 FileName=VerificadorEscopo.h
+CompileCpp=1
+Folder=Analisador Semantico/Escopo
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit27]
+FileName=AnalSemantico.h
+CompileCpp=1
+Folder=Analisador Semantico
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit28]
+FileName=AnalSemantico.cpp
 CompileCpp=1
 Folder=Analisador Semantico
 Compile=1

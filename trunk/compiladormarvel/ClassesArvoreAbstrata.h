@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "Visitor.h"
+#include "TabSimbolos.h"
 
 
 using namespace std;

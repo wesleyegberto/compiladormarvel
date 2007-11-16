@@ -17,8 +17,12 @@
 #define ERRO_TOKEN_INVALIDO                   909
 
 /* Definição de códigos de erros semânticos */
-#define ERRO_TIPO_NAO_ESPERADOS_OPERACAO      910
+#define ERRO_TIPO_NAO_ESPERADO_OPERACAO       910
 #define ERRO_INCOMPATIBILIDADE_TIPO           911
+#define ERRO_TIPO_INCOMPATIVEL_INDICE_ARRAY   912
+#define ERRO_TIPO_INCOMPATIVEL_ATRIBUICAO     913
+#define ERRO_EXPRESSAO_NAO_BOOLEANA           914
+#define ERRO_COMANDO_SEM_EXPRESSAO            915
 
 // nvia uma mensagem de erro para stderr referente ao erro sintático
 void emiteErroLexico(int codigo, int linha);

@@ -1,8 +1,13 @@
 #include "VerificadorTipos.h"
 
+
+/* Definições para o Verificador de Tipos */
 #define BOOLEAN 0
 #define CHAR    1
 #define NUMBER  2
+#define EMPTY   0
+#define FALSE   0
+#define TRUE    1
 
 /* ----------------------------------------------------------------------------
   Implementação do construtor e dos métodos visitantes da
@@ -11,12 +16,13 @@
   Nos casos em que o objeto Node passado para o método visitante tem
   mais de um construtor, os atributos devem ser testados antes do método
   accept(visitor) ser chamado.
-  
 -----------------------------------------------------------------------------*/
 
  
 // Implementa o construtor da classe de verificacao
-VerificadorTipos::VerificadorTipos() {}
+VerificadorTipos::VerificadorTipos() {
+     tipo = EMPTY;
+}
 /*---------------------------------------------------------------------------*/
 
 
@@ -35,13 +41,16 @@ void VerificadorTipos::visit(AddOpNode* additionalOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos na operacao adicao
+        emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "ADICAO", 0);
      }
      
      // Verifica se os tipos sao iguais a tipos nao compativeis com a operacao
      if ((tipoExpressionNode1 != INTEGER) || (tipoExpressionNode1 != FLOAT) ||
-         (tipoExpressionNode2 != INTEGER) || (tipoExpressionNode2 != FLOAT)){                            
+         (tipoExpressionNode2 != INTEGER) || (tipoExpressionNode2 != FLOAT)) {
         // Lança ERRO de tipo incompativel com a operacao de adicao
+         emiteErroSematico(ERRO_TIPO_NAO_ESPERADOS_OPERACAO, "ADICAO", 0);                          
      }
+
           
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
      tipo = tipoExpressionNode2;
@@ -67,12 +76,15 @@ void VerificadorTipos::visit(BitwiseOpNode* bitwiseOpNode){
      
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
-        // Lanca erro semantico de diferenca de tipos na operacao booleana
+        // Lanca erro semantico de diferenca de tipos entre os operandos
+        emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "BITWISEOPNODE", 0);
      }
      
      // Verifica se os tipos sao compativeis para essa operacao
      if (tipoExpressionNode1 != BOOLEAN || tipoExpressionNode2 != BOOLEAN) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao booleana
+        emiteErroSematico(ERRO_TIPO_NAO_ESPERADOS_OPERACAO, "BITWISE", 0);
+        
      }
      
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -91,11 +103,13 @@ void VerificadorTipos::visit(BoolOpNode* boolOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos na operacao booleana
+        emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "BOOLEANA", 0);
      }
      
      // Verifica se os tipos sao compativeis para essa operacao
      if (tipoExpressionNode1 != BOOLEAN || tipoExpressionNode2 != BOOLEAN) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao booleana
+        emiteErroSematico(ERRO_TIPO_NAO_ESPERADOS_OPERACAO, "BOOLEANA", 0);
      }
      
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -149,6 +163,7 @@ void VerificadorTipos::visit(MultOpNode* multOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos na operacao multiplicacao
+        emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "MULTIPLICACAO", 0);
      }
      
      // Verifica se os tipos sao compativeis para essa operacao
@@ -157,6 +172,7 @@ void VerificadorTipos::visit(MultOpNode* multOpNode){
          (tipoExpressionNode2 != INTEGER) ||
          (tipoExpressionNode2 != FLOAT)) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao multiplicacao
+        emiteErroSematico(ERRO_TIPO_NAO_ESPERADOS_OPERACAO, "MULTIPLICACAO", 0);
      }
      
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -183,6 +199,7 @@ void VerificadorTipos::visit(NegativeNode* negativeNode){
          (tipoExpressionNode != FLOAT) ||
          (tipoExpressionNode != NUM)){
          // Lanca erro de tipo incompativel com operador negativo
+         
      }
      
      // Seta o tipo para o no atual

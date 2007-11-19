@@ -1,15 +1,22 @@
 /*
 */
+#include "Visitor.h"
+#include "ClassesArvoreAbstrata.h"
+#include "TabSimbolos.h"
+#include <stdio.h>
+#include <map>
+#include <typeinfo>
 
 
 #ifndef VERIFICADORESCOPO_H
 #define VERIFICADORESCOPO_H
 
-#include "Visitor.h"
-#include "TabSimbolos.h"
+
 
 // Define os atributos e métodos visitantes.
 class VerificadorEscopo : public Visitor {
+          public:
+             multimap<int, REGISTRO* > niveis;    
           public:
              // Declaração do construtor
              VerificadorEscopo();
@@ -43,11 +50,12 @@ class VerificadorEscopo : public Visitor {
               void visit(NumberNode* numberNode);
               void visit(LiteralNode* literalNode);
               
-
+              //Metodos Gerenciais
               void iniciaEscopo();
               void terminaEscopo();
               void insereEscopo(REGISTRO *entrada);
               int retornaEscopo(int nivel);
+              REGISTRO *buscaNoEscopo(int nivel, REGISTRO *valor);
                                        
 };
 #endif

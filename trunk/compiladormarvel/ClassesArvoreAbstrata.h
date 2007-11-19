@@ -5,6 +5,9 @@
     seus construtores e a definição do método accept, que será invocado
     utilizando o padrão visitor.
 */
+#include <stdio.h>
+#include <cstdlib>
+#include <iostream>
 #include "Visitor.h"
 
 using namespace std;
@@ -96,6 +99,9 @@ class ModifierListNode{
 class IdNode : public ExpressionNode {
     public:
         int     id;
+        IdNode  *paiEscopo;                 //Pai do aninhamento ao qual o id pertence
+        int     escopo;                    //indice do escopo que o id pertence
+        int     ativo;                     //Se o id esta ativo(1) ou não(0)
         struct Registro  *registro;
     public:
         IdNode(int i, struct Registro  *reg);

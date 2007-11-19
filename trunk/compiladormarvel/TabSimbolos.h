@@ -1,25 +1,36 @@
-#ifndef _TabSimbolos_h_included_
-#define _TabSimbolos_h_included_
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include "Tokens.h"
+#include "Erro.h"
 
 #define HASHPRIME           221   /*  tamanho inicial da tabela de simbolos */
 #define LEXINI              1024  /*  tamanho inicial do array de lexemas  */
 
-
+#ifndef REGISTRO_H
+#define REGISTRO_H
 typedef struct Registro {
-    int              indiceLexema;    // Indice do lexema no array de lexemas
-    int              token;           // Token do registro
-    int              escopo;           // Escopo do registro
-    int              ativo;           // Registro ativo ou não
-    struct Registro  *prox;           // Proximo registro
-    int              tipo;
+    int              indiceLexema;     // Indice do lexema no array de lexemas
+    int              token;            // Token do registro
+    int              tipo;             // Tipo do Registro
+    int              escopo;           // Escopo do Registro
+    struct Registro  *param;            // Define a qual registro este esta ligado
+    int              offset;           // Offset do Registro
+    int              ativo;            //Verifica se a variave esta ativa ou não
+    struct Registro  *prox;            // Proximo registro
 } REGISTRO;
 
+#endif
 
-typedef struct Array_Lexemas {
+#ifndef ARRAY_LEXEMAS_H
+#define ARRAY_LEXEMAS_H
+typedef struct {
     char  *caracteres;                // Lexema
     int   proxIndice;                 // Proximo indice do array
     int   tamanho;                    // Tamanho atual do array
 } ARRAY_LEXEMAS;
+#endif
 
 // Inicializa a Tabela de Simbolos
 void inicializaTabSimbolos();
@@ -45,5 +56,3 @@ REGISTRO *retornaRegistroAtual();
 
 // Retorna o char correspondente a posiçao pos
 char* retornaCharToken(int pos);
-
-#endif

@@ -2,17 +2,16 @@
 *
 *           MARVEL COMPILER
 */
-#include <stdio.h>
+
+#include <cstdlib>
 #include <iostream>
-#include "DeclaracaoClassesArvore.h"
+#include "Buffer.h"
+#include "TabSimbolos.h"
+#include "AnalLex.h"
+#include "AnalSint.h"
+#include "VerificadorEscopo.h"
 
 using namespace std;
-
-void inicializaAnalisadorLexico(char *);
-void imprimirASAbstrata(ProgramNode* prgmNode);
-ProgramNode* analiseSintatica();
-void imprimeTabSimbolos();
-void finalizaAnalisadorLexico();
 
 int main(int argc, char *argv[])
 {
@@ -42,14 +41,19 @@ int main(int argc, char *argv[])
    printf("\n\n\t\t     -----------------------\n\n");
 
    inicializaAnalisadorLexico(argv[1]);
+   
+   ProgramNode *ASA = analiseSintatica();
 
-   imprimirASAbstrata(analiseSintatica());
+   imprimirASAbstrata(ASA);
+       
+       VerificadorEscopo* verif = new VerificadorEscopo();
+       ASA->accept(verif);
 
    imprimeTabSimbolos();
  
    finalizaAnalisadorLexico();
 
-   system("PAUSE");
+     system("PAUSE");
    
    return 0;
 }

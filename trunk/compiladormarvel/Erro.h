@@ -23,6 +23,7 @@
 #define ERRO_EXPRESSAO_NAO_BOOLEANA           7004
 #define ERRO_COMANDO_SEM_EXPRESSAO            7005
 #define ERRO_TIPO_INCOMPATIVEL_CHAMADA_FRAG   7006
+#define ERRO_VARIAVEL_NAO_DECLARADA           7007
 
 // nvia uma mensagem de erro para stderr referente ao erro sintático
 void emiteErroLexico(int, int);

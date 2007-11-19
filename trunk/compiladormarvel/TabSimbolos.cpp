@@ -1,10 +1,5 @@
 #include "TabSimbolos.h"
-#include <stdlib.h>
-#include "Tokens.h"
-#include <string.h>
-#include "Erro.h"
-
-char *retornaToken(int);
+#include "AnalLex.h"
 
 REGISTRO *tabelaSimbolos[HASHPRIME];
 ARRAY_LEXEMAS arrayLexemas;
@@ -114,8 +109,11 @@ int insereTabSimbolos(int token, char *lexema) {
     // Preenche o registro
     registro->indiceLexema = indiceLexemaAtual;
     registro->token = token;
-    registro->ativo = 0;
-    registro->escopo = -1;
+    registro->tipo = -1;
+    if (token == ID )registro->escopo = -1; else registro->escopo = 0; 
+    registro->offset = 0;
+    registro->ativo = 1;
+    registro->param = NULL;
     registro->prox = tabelaSimbolos[index];              // Aponta o registro atual como pr๓ximo
     registroAtual = registro;
     tabelaSimbolos[index] = registro;                    // Coloca o registro no inicio da fila
@@ -136,7 +134,7 @@ void imprimeTabSimbolos(){
     printf("\nษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป\n");
     printf("บ                      TABELA DE SIMBOLOS                        บ\n");
     printf("ฬออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน\n");
-    printf("บ %-21s %-30s %-10sบ","Token","Atributo","Numerico");
+    printf("บ %-21s %-30s %-10sบ","Token","Atributo","Escopo");
     printf("\nฬออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน\n");
 
     REGISTRO *registro;
@@ -144,7 +142,8 @@ void imprimeTabSimbolos(){
     for(i = 0; i < HASHPRIME; i++)
         if (tabelaSimbolos[i] != NULL)
             for(registro = tabelaSimbolos[i]; registro != NULL; registro = registro->prox)
-                printf("บ %-21s %-30s %-10dบ\n", retornaToken(registro->token), &arrayLexemas.caracteres[registro->indiceLexema], registro->token);
+               if (registro->escopo!=-1)
+                  printf("บ %-21s %-30s %-10dบ\n", retornaToken(registro->token), &arrayLexemas.caracteres[registro->indiceLexema], registro->escopo);
    printf("ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ\n");
 }
 

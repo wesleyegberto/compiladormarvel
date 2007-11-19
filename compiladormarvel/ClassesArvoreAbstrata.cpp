@@ -1,5 +1,4 @@
 #include "ClassesArvoreAbstrata.h"
-#include <stdio.h>
 
 ProgramNode::ProgramNode(StatementListNode* sln) : stmtListNode(sln) {}
 void ProgramNode::accept(Visitor* v) {v->visit(this);}
@@ -122,7 +121,7 @@ ArrayNode::~ArrayNode() {
 }
 
 
-IdNode::IdNode(int i, struct Registro  *reg) : id(i), registro(reg) {}
+IdNode::IdNode(int i, struct Registro  *reg) : id(i), registro(reg), escopo(-1), ativo(0), paiEscopo(NULL){}
 void IdNode::accept(Visitor* v) {v->visit(this);}
 
 LiteralNode::LiteralNode(int l) : literal(l) {}

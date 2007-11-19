@@ -26,11 +26,13 @@ VerificadorTipos::VerificadorTipos() {
 void VerificadorTipos::visit(AddOpNode* additionalOpNode){
      // Chama o visitante para recuperar o tipo do lado direito
      (additionalOpNode->expressionNode1->accept(this));
-     int tipoExpressionNode1 = tipo;
+     int tipoExpressionNode1 = INTEGER; //
+
      
      // Chama o visitante para recuperar o tipo do lado esquerdo
      (additionalOpNode->expressionNode2->accept(this));
-     int tipoExpressionNode2 = tipo;
+     int tipoExpressionNode2 = INTEGER; //
+
      
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
@@ -39,8 +41,8 @@ void VerificadorTipos::visit(AddOpNode* additionalOpNode){
      }
      
      // Verifica se os tipos sao iguais a tipos nao compativeis com a operacao
-     if ((tipoExpressionNode1 != INTEGER) || (tipoExpressionNode1 != FLOAT) ||
-         (tipoExpressionNode2 != INTEGER) || (tipoExpressionNode2 != FLOAT)) {
+     if (((tipoExpressionNode1 != INTEGER) && (tipoExpressionNode1 != FLOAT)) ||
+         ((tipoExpressionNode2 != INTEGER) && (tipoExpressionNode2 != FLOAT))) {
         // Lança ERRO de tipo incompativel com a operacao de adicao
          emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "ADICAO", linha);                          
      }
@@ -207,7 +209,8 @@ void VerificadorTipos::visit(IdListNode* idListNode){
 
 void VerificadorTipos::visit(IdNode* idNode){
 //     fprintf(stdout, "---------------------------------------------------\n");
-//     fprintf(stdout, "variavel: %s\n", retornaCharToken(idNode->registro->indiceLexema));     
+//     fprintf(stdout, "variavel: %s\n", retornaCharToken(idNode->registro->indiceLexema));
+//     cout << "endereco da variavel e " << &(*idNode->registro) << endl;    
 //     fprintf(stdout, "tipo do no: %d\n", idNode->registro->tipo);
 //     fprintf(stdout, "numero da linha: %d\n", idNode->registro->linha);     
      tipo = idNode->registro->tipo;

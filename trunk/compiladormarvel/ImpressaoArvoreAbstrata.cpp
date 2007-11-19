@@ -19,7 +19,9 @@ char* retornaCharToken(int pos);
 int nivel = 0;
  
 // Implementa o construtor da classe de Impressao
-ImpressaoArvoreAbstrata::ImpressaoArvoreAbstrata(int nvl) : nivel(nvl) {}
+ImpressaoArvoreAbstrata::ImpressaoArvoreAbstrata() {
+    nivel = 0;
+}
 /*---------------------------------------------------------------------------*/
 
 

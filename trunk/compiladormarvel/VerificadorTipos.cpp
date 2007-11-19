@@ -38,14 +38,14 @@ void VerificadorTipos::visit(AddOpNode* additionalOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos na operacao adicao
-        //emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "ADICAO", 0);
+        emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "ADICAO", 0);
      }
      
      // Verifica se os tipos sao iguais a tipos nao compativeis com a operacao
      if ((tipoExpressionNode1 != INTEGER) || (tipoExpressionNode1 != FLOAT) ||
          (tipoExpressionNode2 != INTEGER) || (tipoExpressionNode2 != FLOAT)) {
         // Lança ERRO de tipo incompativel com a operacao de adicao
-         //emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "ADICAO", 0);                          
+         emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "ADICAO", 0);                          
      }
           
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -63,7 +63,7 @@ void VerificadorTipos::visit(ArrayNode* arrayNode){
      
      if (tipoExpressionNode != INTEGER) {
         // Lança erro de tipo incompatível para referencia de indíce do vetor                       
-        // emiteErroSematico(ERRO_TIPO_INCOMPATIVEL_INDICE_ARRAY, NULL, 0);
+        emiteErroSematico(ERRO_TIPO_INCOMPATIVEL_INDICE_ARRAY, NULL, 0);
      }
      
      // Estabelecer uma forma de verificar se o valor passado pertence ao inter
@@ -88,12 +88,12 @@ void VerificadorTipos::visit(AssignNode* assignNode){
      
      if ((tipoExpressionNode1 != tipoId) || (tipoExpressionNode2 != tipoId)){
         // Lança erro de tipos incompatíveis durante uma atribuição
-        //emiteErroSematico(ERRO_TIPO_INCOMPATIVEL_ATRIBUICAO, NULL, 0);
+        emiteErroSematico(ERRO_TIPO_INCOMPATIVEL_ATRIBUICAO, NULL, 0);
      }
      
      if (tipoExpressionNode1 != tipoExpressionNode2){
         // Lança erro de tipos incompatíveis 
-        //emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, NULL, 0);
+        emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, NULL, 0);
      }
      
      // O nó tem que retornar o tipo do ID para nível superior na árvore.
@@ -112,13 +112,13 @@ void VerificadorTipos::visit(BitwiseOpNode* bitwiseOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos entre os operandos
-        //emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "BITWISEOPNODE", 0);
+        emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "BITWISEOPNODE", 0);
      }
      
      // Verifica se os tipos sao compativeis para essa operacao
      if (tipoExpressionNode1 != BOOLEAN || tipoExpressionNode2 != BOOLEAN) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao booleana
-        //emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "BITWISE", 0);
+        emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "BITWISE", 0);
      }
      
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -137,13 +137,13 @@ void VerificadorTipos::visit(BoolOpNode* boolOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos na operacao booleana
-        //emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "BOOLEANA", 0);
+        emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "BOOLEANA", 0);
      }
      
      // Verifica se os tipos sao compativeis para essa operacao
      if (tipoExpressionNode1 != BOOLEAN || tipoExpressionNode2 != BOOLEAN) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao booleana
-        //emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "BOOLEANA", 0);
+        emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "BOOLEANA", 0);
      }
      
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -154,12 +154,37 @@ void VerificadorTipos::visit(CallNode* callNode){
 }
 
 void VerificadorTipos::visit(ConstantNode* constantNode){
+     (constantNode->accept(this));
+     int tipoConstantNode = tipo;
+     
+     if (tipoConstantNode == NUM) {
+        // O nó é do tipo NUM
+        tipo = INTEGER;
+     } else {
+        // Senão o nó é do tipo LITERAL, que no caso é interpretado como CHAR.
+        tipo = CHAR;
+     }
 }
 
-void VerificadorTipos::visit(ExpressionListNode* expressionListNode){
-}
+void VerificadorTipos::visit(ExpressionListNode* expressionListNode){}
 
 void VerificadorTipos::visit(FragCallNode* fragCallNode){
+     // Chama o visitante do FragCallNode para recuperar o tipo do id
+     (fragCallNode->idNode->accept(this));
+     int tipoId = tipo;
+     
+     // Chama o visitante do FragCallNode para recuperar o tipo da expressão
+     (fragCallNode->expressionList->accept(this));
+     int tipoExpressionNode = tipo;
+     
+     // Verifica a compatibilidade de tipos entre os integrantes do nó FragCall
+     if (tipoExpressionNode != tipoId){
+        // Lança erro de incompatilidade de tipo na chamada do fragmento
+        emiteErroSematico(ERRO_TIPO_INCOMPATIVEL_CHAMADA_FRAG, NULL, 0);  
+     }
+     
+     // O nó deve retornar o tipo do ID
+     tipo = tipoId;
 }
 
 void VerificadorTipos::visit(FragmentNode* fragmentNode){
@@ -190,7 +215,7 @@ void VerificadorTipos::visit(IfNode* ifNode){
      
      if (tipoExpressionNode != BOOLEAN) {
         // Lança erro de expressao não booleana numa clausula if
-        //emiteErroSematico(ERRO_EXPRESSAO_NAO_BOOLEANA, NULL, 0);
+        emiteErroSematico(ERRO_EXPRESSAO_NAO_BOOLEANA, NULL, 0);
      }
      
      // Visita a cláusula ENTAO
@@ -208,9 +233,19 @@ void VerificadorTipos::visit(LiteralNode* literalNode){
 }
 
 void VerificadorTipos::visit(ModifierListNode* modifierListNode){
+     
+     // Verifica se o modifierList desse nó está vazio e chama seu visitante
+     if (ModifierListNode->,modifierListNode) (modifierListNode->modifierListNode->accept(this));
+     
+     // Chama o visitante do modifier desse nó
+     (modifierListNode->modifierNode->accept(this));
+     
+     // Invocando o accept do modifierNode, a variável tipo fica setada para esse nó.
 }
 
 void VerificadorTipos::visit(ModifierNode* modifierNode){
+     // Atribui ao tipo, o definido no nó modifier pelo atributo int modifier
+     tipo = mdifierNode->modifier;
 }   
 
 void VerificadorTipos::visit(MultOpNode* multOpNode){
@@ -225,7 +260,7 @@ void VerificadorTipos::visit(MultOpNode* multOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos na operacao multiplicacao
-        //emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "MULTIPLICACAO", 0);
+        emiteErroSematico(ERRO_INCOMPATIBILIDADE_TIPO, "MULTIPLICACAO", 0);
      }
      
      // Verifica se os tipos sao compativeis para essa operacao
@@ -234,7 +269,7 @@ void VerificadorTipos::visit(MultOpNode* multOpNode){
          (tipoExpressionNode2 != INTEGER) ||
          (tipoExpressionNode2 != FLOAT)) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao multiplicacao
-        //emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "MULTIPLICACAO", 0);
+        emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "MULTIPLICACAO", 0);
      }
      
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -264,7 +299,7 @@ void VerificadorTipos::visit(NegativeNode* negativeNode){
          (tipoExpressionNode != FLOAT) ||
          (tipoExpressionNode != NUM)){
          // Lanca erro de tipo incompativel com operador negativo
-         
+         emiteErroSematico(err, "NEGAÇÃO", 0);
      }
      
      // Seta o tipo para o no atual
@@ -276,6 +311,7 @@ void VerificadorTipos::visit(NotNode* notNode){
      int tipoNotNode = tipo;
      if (tipoNotNode != BOOLEAN) {
         // Lanca erro de tipo incompativel na comparacao not equal
+        emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "NEGAÇÃO", 0);
      }
      tipo = BOOLEAN;
 }
@@ -285,9 +321,48 @@ void VerificadorTipos::visit(NumberNode* numberNode){
 }
 
 void VerificadorTipos::visit(ProgramNode* programNode){
+     // Chama o visitante para seu StatementList
+     (programNode->stmtListNode->accept(this));
+     
+     // Esse nó não retorna tipo
+     tipo = EMPTY;
 }
 
 void VerificadorTipos::visit(ReadNode* readNode){
+     // Variáveis auxiliares do métodos
+     int tipoExpressao;
+
+     if (readNode->expressionListNode){
+          ExpressionListNode *expressionListNode = readNode->expressionListNode;
+          if (expressionListNode == NULL){
+             // Lançar erro semântico com ReadNode sem expressão definida
+          } else {
+                 while (expressionListNode != NULL){
+                       // Chama o visitante para recuperar o tipo da expressão desse nó-filho
+                       (expressionListNode->expressionNode->accept(this));
+                       tipoExpressao = tipo;
+                       
+                       if ((tipoExpressao != INTEGER) || (tipoExpressao != REAL)){
+                          // Lançar erro semantico de tipo incompativel com a operacao
+                          emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "LEITURA", 0);
+                       }
+                       
+                       // Recupera a lista filha de expressões
+                       expressionListNode = expressionListNode->expressionListNode;
+                       
+                 }// end while
+          } // end if 
+     } // end if 
+
+     // Chama o visitante para o array filho e faz sua verificação
+     if (readNode->arrayNode) (readNode->arrayNode->accept(this));
+     
+     // Não chama o visitante para o id filho, pois isso seria necessário no 
+     // caso de verificar o seu tipo, sendo que o visitante do id filho 
+     // só recupera o seu tipo.
+
+     // O nó atual não retorna tipo 
+     tipo = EMPTY;
 }
 
 void VerificadorTipos::visit(RelOpNode* relOpNode){
@@ -302,6 +377,7 @@ void VerificadorTipos::visit(RelOpNode* relOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao relacional
+        emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "RELACIONAL", 0);
         
      } // Verifica com o else else {
           // tipo = BOOLEAN;
@@ -311,8 +387,7 @@ void VerificadorTipos::visit(RelOpNode* relOpNode){
      tipo = BOOLEAN;
 }
 
-void VerificadorTipos::visit(StatementListNode* stmtListNode){
-}
+void VerificadorTipos::visit(StatementListNode* stmtListNode){}
 
 void VerificadorTipos::visit(WhileNode* whileNode){
      // Chama o visitante para recuperar o tipo da expressão
@@ -321,7 +396,7 @@ void VerificadorTipos::visit(WhileNode* whileNode){
      
      if (tipoExpressionNode != BOOLEAN) {
         // Lança erro de expressão não booleana em condicional while
-        // emiteErroSematico(ERRO_EXPRESSAO_NAO_BOOLEANA, NULL, 0);
+        emiteErroSematico(ERRO_EXPRESSAO_NAO_BOOLEANA, NULL, 0);
      }
      
      // Chama o vistante para o conteúdo do while.
@@ -343,7 +418,7 @@ void VerificadorTipos::visit(WriteNode* writeNode){
      // Verifica se a lista de expressões do nó Write está vazia.
      if (expressionList == NULL){
          // Lança erro de comando write sem expressão
-         //emiteErroSematico(ERRO_COMANDO_SEM_EXPRESSAO, "WRITE", 0);
+         emiteErroSematico(ERRO_COMANDO_SEM_EXPRESSAO, "WRITE", 0);
          
      } else {
             // Efetua uma iteração entre os elementos expressions da lista
@@ -356,10 +431,10 @@ void VerificadorTipos::visit(WriteNode* writeNode){
                       (tipoExpression != FLOAT)   &&
                       (tipoExpression != CHAR)){
                       // Lança erro de tipo incompatível com o comando 
-                      // emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "WRITE", 0);
+                      emiteErroSematico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "WRITE", 0);
                   }
                   // Recupera a próxima lista
-                  // expressionList = expressionList->expressionListNode;
+                  expressionList = expressionList->expressionListNode;
             }
      }
      // O nó Write não precisa enviar tipo a nível superior.

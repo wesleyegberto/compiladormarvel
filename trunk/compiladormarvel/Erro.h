@@ -23,6 +23,7 @@
 #define ERRO_TIPO_INCOMPATIVEL_ATRIBUICAO     913
 #define ERRO_EXPRESSAO_NAO_BOOLEANA           914
 #define ERRO_COMANDO_SEM_EXPRESSAO            915
+#define ERRO_TIPO_INCOMPATIVEL_CHAMADA_FRAG   916
 
 // nvia uma mensagem de erro para stderr referente ao erro sintático
 void emiteErroLexico(int codigo, int linha);

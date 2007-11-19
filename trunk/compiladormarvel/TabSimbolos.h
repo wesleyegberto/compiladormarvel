@@ -20,7 +20,7 @@ typedef struct Registro {
 
 
 
-typedef struct {
+typedef struct Array_Lexemas {
     char  *caracteres;                // Lexema
     int   proxIndice;                 // Proximo indice do array
     int   tamanho;                    // Tamanho atual do array

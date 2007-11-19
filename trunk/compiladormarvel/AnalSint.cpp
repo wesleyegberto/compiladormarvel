@@ -665,12 +665,14 @@ void match(int token, int follow[], int* iLexema){
         }else{                                                            //token não pertence ao follow da produção atual e não é fim de arquivo
            lookahead = proxToken();                                       
            while ((lookaheadPertenceFollow(follow)==0)||(lookahead == token)){ //procura o proximo token valido
-                 if (lookahead==EOF) break;
-                 emiteErroSintatico(ERRO_TOKEN_ESPERADO,token,retornaLinha()); 
+                 if (lookahead==EOF) {
+                     emiteErroSintatico(ERRO_TOKEN_ESPERADO,token,retornaLinha()); //emite o erro
+                     return;
+                 }
+                 emiteErroSintatico(ERRO_TOKEN_ESPERADO,token,retornaLinha());
+                 lookahead = proxToken();
            }
         }
-        emiteErroSintatico(ERRO_TOKEN_INVALIDO,token,retornaLinha());           //Emite erro
-        lookahead = proxToken();                                        //retorna o proximo token
      }
 }
 

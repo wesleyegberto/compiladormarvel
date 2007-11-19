@@ -2,15 +2,17 @@
 *
 *           MARVEL COMPILER
 */
-
-#include <cstdlib>
+#include <stdio.h>
 #include <iostream>
-#include "Buffer.h"
-#include "TabSimbolos.h"
-#include "AnalLex.h"
-#include "AnalSint.h"
+#include "DeclaracaoClassesArvore.h"
 
 using namespace std;
+
+void inicializaAnalisadorLexico(char *);
+void imprimirASAbstrata(ProgramNode* prgmNode);
+ProgramNode* analiseSintatica();
+void imprimeTabSimbolos();
+void finalizaAnalisadorLexico();
 
 int main(int argc, char *argv[])
 {
@@ -47,7 +49,7 @@ int main(int argc, char *argv[])
  
    finalizaAnalisadorLexico();
 
-     system("PAUSE");
+   system("PAUSE");
    
    return 0;
 }

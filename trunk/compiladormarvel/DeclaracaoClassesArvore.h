@@ -1,5 +1,5 @@
-#ifndef DECLARACAOCLASSESARVORE_H
-#define DECLARACAOCLASSESARVORE_H
+#ifndef _DeclaracaoClassesArvore_h_included_
+#define _DeclaracaoClassesArvore_h_included_
 // Declara todas as classes utilizadas pelo header de Visitor
 
 // Classes abstratas

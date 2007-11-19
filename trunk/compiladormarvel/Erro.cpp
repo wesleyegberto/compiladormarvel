@@ -1,5 +1,6 @@
 #include "Erro.h"
-#include "Anallex.h"
+
+char *retornaLiteralToken(int token);
 
 /* Definicao das mensagens para erro durante análise léxica */
 #define MSG_ERRO_GETTOKEN(linha)                    fprintf(stderr, "ERRO NO RECONHECIMENTO DO TOKEN NA LINHA %d.\n", linha)
@@ -60,11 +61,13 @@ void emiteErroSintatico(int codigo, int token, int linha){
 
     switch(codigo) {
         case(ERRO_TOKEN_ESPERADO):
-            if(token == EOF) MSG_ERRO_EOF_SINTATICO(linha) ;
-            else MSG_TOKEN_ESPERADO(retornaLiteralToken(token), linha);
+            MSG_TOKEN_ESPERADO(retornaLiteralToken(token), linha);
             break;
         case(ERRO_TOKEN_INVALIDO): 
             MSG_TOKEN_INVALIDO(retornaLiteralToken(token), linha);
+            break;
+        case(ERRO_EOF):
+            MSG_ERRO_EOF_SINTATICO(linha);
             break;
         } // end switch 
               
@@ -72,7 +75,7 @@ void emiteErroSintatico(int codigo, int token, int linha){
 
 // Envia uma mensagem de erro para stderr referente a erro semântico
 void emiteErroSemantico(int codigo, char* operacao, int linha){
-     
+
      switch(codigo) {
          case(ERRO_INCOMPATIBILIDADE_TIPO):
             MSG_TIPOS_INCOMPATIVEIS(linha);

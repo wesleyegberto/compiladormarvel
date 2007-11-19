@@ -1,9 +1,9 @@
 #include "AnalSemantico.h"
+#include <stdio.h>
 #include "VerificadorEscopo.h"
-#include "VerificadorVariaveis.h"
+#include "ClassesArvoreAbstrata.h"
 #include "VerificadorTipos.h"
-
-
+#include "VerificadorVariaveis.h"
 
 /*
 

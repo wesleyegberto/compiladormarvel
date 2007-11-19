@@ -2,12 +2,10 @@
 // As classes em si não são necessárias para calcular o tamanho do visitor
 // pois seus métodos recebem apenas ponteiros como parâmetro.
 // Forward declaration
+#ifndef _Visitor_h_included_
+#define _Visitor_h_included_
 
 #include "DeclaracaoClassesArvore.h"
-
-#ifndef VISITOR_H
-#define VISITOR_H
-
 
 class Visitor{
       public:

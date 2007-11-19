@@ -1,5 +1,4 @@
 #include "VerificadorVariaveis.h"
-#include "VerificadorEscopo.h"
 
 /* ----------------------------------------------------------------------------
   Implementação do construtor e dos métodos visitantes da
@@ -18,7 +17,7 @@ VerificadorVariaveis::VerificadorVariaveis() {
    tamanho = 0;
    offset = 4;
    parametros = 0;
-   in
+//   in
 }
 /*---------------------------------------------------------------------------*/
 

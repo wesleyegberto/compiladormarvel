@@ -3,15 +3,18 @@
   Visitor (é a implementação de Visitor para o caso em que a declaração
   das variáveis é verificada).
 */
-#include "Visitor.h"
-#include "ClassesArvoreAbstrata.h"
-#include "Erro.h"
-#include "Tokens.h"
-#include <stdio.h>
-
 #ifndef VERIFICADORTIPOS_H
 #define VERIFICADORTIPOS_H
 
+#include "Visitor.h"
+
+/* Definições para o Verificador de Tipos */
+#define BOOLEAN 0
+#define CHAR    1
+#define NUMBER  2
+#define EMPTY   0
+#define FALSE   0
+#define TRUE    1
 
 
 // Define os atributos e os métodos visitantes

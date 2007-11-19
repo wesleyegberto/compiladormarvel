@@ -1,4 +1,8 @@
 #include "Buffer.h"
+#include <stdio.h>
+#include <string.h>
+#include "Erro.h"
+#include <stdlib.h>
 
 /* Entrada do buffer. Caso não tenha um arquivo como parâmetro, receberá o stdin */
 FILE *fonte;

@@ -1,9 +1,9 @@
-#include "DeclaracaoClassesArvore.h"
 /**
  * 
  *          Analisador Sintático
  * 
  */
+#include "ClassesArvoreAbstrata.h"
  
 // Função que casa o token lido com o esperado
 void match(int token, int follow[], int* iLexema);

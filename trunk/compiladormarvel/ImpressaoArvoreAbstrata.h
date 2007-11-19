@@ -2,14 +2,10 @@
   Arquivo header que define a classe ImpressaoArvoreAbstrata, que herda de
   Visitor (é a implementação de Visitor).
 */
+#ifndef _ImpressaoArvoreAbstrata_h_included_
+#define _ImpressaoArvoreAbstrata_h_included_
+
 #include "Visitor.h"
-#include "ClassesArvoreAbstrata.h"
-#include "TabSimbolos.h"
-#include <stdio.h>
-
-#ifndef IMPRESSAOARVOREABSTRATA_H
-#define IMPRESSAOARVOREABSTRATA_H
-
 
 // Define os atributos e métodos visitantes.
 class ImpressaoArvoreAbstrata : public Visitor {

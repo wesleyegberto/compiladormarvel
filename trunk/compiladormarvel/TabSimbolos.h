@@ -1,9 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include "Tokens.h"
-#include "Erro.h"
+#ifndef _TabSimbolos_h_included_
+#define _TabSimbolos_h_included_
 
 #define HASHPRIME           221   /*  tamanho inicial da tabela de simbolos */
 #define LEXINI              1024  /*  tamanho inicial do array de lexemas  */
@@ -17,7 +13,6 @@ typedef struct Registro {
     struct Registro  *prox;           // Proximo registro
     int              tipo;
 } REGISTRO;
-
 
 
 typedef struct Array_Lexemas {
@@ -50,3 +45,5 @@ REGISTRO *retornaRegistroAtual();
 
 // Retorna o char correspondente a posiçao pos
 char* retornaCharToken(int pos);
+
+#endif

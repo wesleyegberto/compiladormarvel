@@ -22,6 +22,7 @@ class VerificadorTipos : public Visitor {
       
       public:
              int tipo;
+             int linha;
 
       public:
              // Declaração do construtor

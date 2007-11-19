@@ -5,8 +5,8 @@ CPP  = g++.exe -D__DEBUG__
 CC   = gcc.exe -D__DEBUG__
 WINDRES = windres.exe
 RES  = Marvel_private.res
-OBJ  = main.o Erro.o Anallex.o AnalSint.o ClassesArvoreAbstrata.o ImpressaoArvoreAbstrata.o Buffer.o TabSimbolos.o VerificadorVariaveis.o VerificadorTipos.o VerificadorEscopo.o AnalSemantico.o $(RES)
-LINKOBJ  = main.o Erro.o Anallex.o AnalSint.o ClassesArvoreAbstrata.o ImpressaoArvoreAbstrata.o Buffer.o TabSimbolos.o VerificadorVariaveis.o VerificadorTipos.o VerificadorEscopo.o AnalSemantico.o $(RES)
+OBJ  = main.o Erro.o Anallex.o AnalSint.o ClassesArvoreAbstrata.o ImpressaoArvoreAbstrata.o Buffer.o TabSimbolos.o VerificadorVariaveis.o VerificadorTipos.o VerificadorEscopo.o $(RES)
+LINKOBJ  = main.o Erro.o Anallex.o AnalSint.o ClassesArvoreAbstrata.o ImpressaoArvoreAbstrata.o Buffer.o TabSimbolos.o VerificadorVariaveis.o VerificadorTipos.o VerificadorEscopo.o $(RES)
 LIBS =  -L"C:/Dev-Cpp/lib"  -g3 
 INCS =  -I"C:/Dev-Cpp/include" 
 CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
@@ -58,9 +58,6 @@ VerificadorTipos.o: VerificadorTipos.cpp
 
 VerificadorEscopo.o: VerificadorEscopo.cpp
 	$(CPP) -c VerificadorEscopo.cpp -o VerificadorEscopo.o $(CXXFLAGS)
-
-AnalSemantico.o: AnalSemantico.cpp
-	$(CPP) -c AnalSemantico.cpp -o AnalSemantico.o $(CXXFLAGS)
 
 Marvel_private.res: Marvel_private.rc 
 	$(WINDRES) -i Marvel_private.rc --input-format=rc -o Marvel_private.res -O coff 

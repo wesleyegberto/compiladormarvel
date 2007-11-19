@@ -17,6 +17,7 @@
 // Implementa o construtor da classe de verificacao
 VerificadorTipos::VerificadorTipos() {
      tipo = EMPTY;
+     linha = 0;
 }
 /*---------------------------------------------------------------------------*/
 // Implementa os métodos visitantes
@@ -34,14 +35,14 @@ void VerificadorTipos::visit(AddOpNode* additionalOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos na operacao adicao
-        emiteErroSemantico(ERRO_INCOMPATIBILIDADE_TIPO, "ADICAO", 0);
+        emiteErroSemantico(ERRO_INCOMPATIBILIDADE_TIPO, "ADICAO", linha);
      }
      
      // Verifica se os tipos sao iguais a tipos nao compativeis com a operacao
      if ((tipoExpressionNode1 != INTEGER) || (tipoExpressionNode1 != FLOAT) ||
          (tipoExpressionNode2 != INTEGER) || (tipoExpressionNode2 != FLOAT)) {
         // Lança ERRO de tipo incompativel com a operacao de adicao
-         emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "ADICAO", 0);                          
+         emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "ADICAO", linha);                          
      }
           
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -59,7 +60,7 @@ void VerificadorTipos::visit(ArrayNode* arrayNode){
      
      if (tipoExpressionNode != INTEGER) {
         // Lança erro de tipo incompatível para referencia de indíce do vetor                       
-        emiteErroSemantico(ERRO_TIPO_INCOMPATIVEL_INDICE_ARRAY, NULL, 0);
+        emiteErroSemantico(ERRO_TIPO_INCOMPATIVEL_INDICE_ARRAY, NULL, linha);
      }
      
      // Estabelecer uma forma de verificar se o valor passado pertence ao inter
@@ -84,12 +85,12 @@ void VerificadorTipos::visit(AssignNode* assignNode){
      
      if ((tipoExpressionNode1 != tipoId) || (tipoExpressionNode2 != tipoId)){
         // Lança erro de tipos incompatíveis durante uma atribuição
-        emiteErroSemantico(ERRO_TIPO_INCOMPATIVEL_ATRIBUICAO, NULL, 0);
+        emiteErroSemantico(ERRO_TIPO_INCOMPATIVEL_ATRIBUICAO, NULL, linha);
      }
      
      if (tipoExpressionNode1 != tipoExpressionNode2){
         // Lança erro de tipos incompatíveis 
-        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, NULL, 0);
+        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, NULL, linha);
      }
      
      // O nó tem que retornar o tipo do ID para nível superior na árvore.
@@ -108,13 +109,13 @@ void VerificadorTipos::visit(BitwiseOpNode* bitwiseOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos entre os operandos
-        emiteErroSemantico(ERRO_INCOMPATIBILIDADE_TIPO, "BITWISEOPNODE", 0);
+        emiteErroSemantico(ERRO_INCOMPATIBILIDADE_TIPO, "BITWISEOPNODE", linha);
      }
      
      // Verifica se os tipos sao compativeis para essa operacao
      if (tipoExpressionNode1 != BOOLEAN || tipoExpressionNode2 != BOOLEAN) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao booleana
-        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "BITWISE", 0);
+        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "BITWISE", linha);
      }
      
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -133,13 +134,13 @@ void VerificadorTipos::visit(BoolOpNode* boolOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos na operacao booleana
-        emiteErroSemantico(ERRO_INCOMPATIBILIDADE_TIPO, "BOOLEANA", 0);
+        emiteErroSemantico(ERRO_INCOMPATIBILIDADE_TIPO, "BOOLEANA", linha);
      }
      
      // Verifica se os tipos sao compativeis para essa operacao
      if (tipoExpressionNode1 != BOOLEAN || tipoExpressionNode2 != BOOLEAN) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao booleana
-        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "BOOLEANA", 0);
+        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "BOOLEANA", linha);
      }
      
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -176,7 +177,7 @@ void VerificadorTipos::visit(FragCallNode* fragCallNode){
      // Verifica a compatibilidade de tipos entre os integrantes do nó FragCall
      if (tipoExpressionNode != tipoId){
         // Lança erro de incompatilidade de tipo na chamada do fragmento
-        emiteErroSemantico(ERRO_TIPO_INCOMPATIVEL_CHAMADA_FRAG, NULL, 0);  
+        emiteErroSemantico(ERRO_TIPO_INCOMPATIVEL_CHAMADA_FRAG, NULL, linha);  
      }
      
      // O nó deve retornar o tipo do ID
@@ -201,7 +202,12 @@ void VerificadorTipos::visit(IdListNode* idListNode){
 }
 
 void VerificadorTipos::visit(IdNode* idNode){
+     fprintf(stdout, "---------------------------------------------------\n");
+     fprintf(stdout, "variavel: %s\n", retornaCharToken(idNode->registro->indiceLexema));     
+     fprintf(stdout, "tipo do no: %d\n", idNode->registro->tipo);
+     fprintf(stdout, "numero da linha: %d\n", idNode->registro->linha);     
      tipo = idNode->registro->tipo;
+     linha = idNode->registro->linha;
 }
 
 void VerificadorTipos::visit(IfNode* ifNode){
@@ -211,7 +217,7 @@ void VerificadorTipos::visit(IfNode* ifNode){
      
      if (tipoExpressionNode != BOOLEAN) {
         // Lança erro de expressao não booleana numa clausula if
-        emiteErroSemantico(ERRO_EXPRESSAO_NAO_BOOLEANA, NULL, 0);
+        emiteErroSemantico(ERRO_EXPRESSAO_NAO_BOOLEANA, NULL, linha);
      }
      
      // Visita a cláusula ENTAO
@@ -226,6 +232,7 @@ void VerificadorTipos::visit(IfNode* ifNode){
 
 void VerificadorTipos::visit(LiteralNode* literalNode){
      tipo = CHAR;
+     //linha = literalNode->registro->linha;
 }
 
 void VerificadorTipos::visit(ModifierListNode* modifierListNode){
@@ -256,7 +263,7 @@ void VerificadorTipos::visit(MultOpNode* multOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de diferenca de tipos na operacao multiplicacao
-        emiteErroSemantico(ERRO_INCOMPATIBILIDADE_TIPO, "MULTIPLICACAO", 0);
+        emiteErroSemantico(ERRO_INCOMPATIBILIDADE_TIPO, "MULTIPLICACAO", linha);
      }
      
      // Verifica se os tipos sao compativeis para essa operacao
@@ -265,7 +272,7 @@ void VerificadorTipos::visit(MultOpNode* multOpNode){
          (tipoExpressionNode2 != INTEGER) ||
          (tipoExpressionNode2 != FLOAT)) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao multiplicacao
-        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "MULTIPLICACAO", 0);
+        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "MULTIPLICACAO", linha);
      }
      
      // Atribui o tipo do lado esquerdo ao tipo global para continuar o Semantico
@@ -295,7 +302,7 @@ void VerificadorTipos::visit(NegativeNode* negativeNode){
          (tipoExpressionNode != FLOAT) ||
          (tipoExpressionNode != NUM)){
          // Lanca erro de tipo incompativel com operador negativo
-         emiteErroSemantico(ERRO_INCOMPATIBILIDADE_TIPO, "NEGAÇÃO", 0);
+         emiteErroSemantico(ERRO_INCOMPATIBILIDADE_TIPO, "NEGACAO", linha);
      }
      
      // Seta o tipo para o no atual
@@ -307,13 +314,14 @@ void VerificadorTipos::visit(NotNode* notNode){
      int tipoNotNode = tipo;
      if (tipoNotNode != BOOLEAN) {
         // Lanca erro de tipo incompativel na comparacao not equal
-        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "NEGAÇÃO", 0);
+        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "NEGACAO", linha);
      }
      tipo = BOOLEAN;
 }
 
 void VerificadorTipos::visit(NumberNode* numberNode){
      tipo = numberNode->registro->tipo;
+     linha = numberNode->registro->linha;
 }
 
 void VerificadorTipos::visit(ProgramNode* programNode){
@@ -340,7 +348,7 @@ void VerificadorTipos::visit(ReadNode* readNode){
                        
                        if ((tipoExpressao != INTEGER) || (tipoExpressao != FLOAT)){
                           // Lançar erro semantico de tipo incompativel com a operacao
-                          emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "LEITURA", 0);
+                          emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "LEITURA", linha);
                        }
                        
                        // Recupera a lista filha de expressões
@@ -373,7 +381,7 @@ void VerificadorTipos::visit(RelOpNode* relOpNode){
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao relacional
-        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "RELACIONAL", 0);
+        emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "RELACIONAL", linha);
         
      } // Verifica com o else else {
           // tipo = BOOLEAN;
@@ -383,7 +391,11 @@ void VerificadorTipos::visit(RelOpNode* relOpNode){
      tipo = BOOLEAN;
 }
 
-void VerificadorTipos::visit(StatementListNode* stmtListNode){}
+void VerificadorTipos::visit(StatementListNode* stmtListNode){
+     (stmtListNode->statementNode->accept(this));
+     if (stmtListNode->statementListNode)
+        (stmtListNode->statementListNode->accept(this));
+}
 
 void VerificadorTipos::visit(WhileNode* whileNode){
      // Chama o visitante para recuperar o tipo da expressão
@@ -392,7 +404,7 @@ void VerificadorTipos::visit(WhileNode* whileNode){
      
      if (tipoExpressionNode != BOOLEAN) {
         // Lança erro de expressão não booleana em condicional while
-        emiteErroSemantico(ERRO_EXPRESSAO_NAO_BOOLEANA, NULL, 0);
+        emiteErroSemantico(ERRO_EXPRESSAO_NAO_BOOLEANA, NULL, linha);
      }
      
      // Chama o vistante para o conteúdo do while.
@@ -414,7 +426,7 @@ void VerificadorTipos::visit(WriteNode* writeNode){
      // Verifica se a lista de expressões do nó Write está vazia.
      if (expressionList == NULL){
          // Lança erro de comando write sem expressão
-         emiteErroSemantico(ERRO_COMANDO_SEM_EXPRESSAO, "WRITE", 0);
+         emiteErroSemantico(ERRO_COMANDO_SEM_EXPRESSAO, "WRITE", linha);
          
      } else {
             // Efetua uma iteração entre os elementos expressions da lista
@@ -427,7 +439,7 @@ void VerificadorTipos::visit(WriteNode* writeNode){
                       (tipoExpression != FLOAT)   &&
                       (tipoExpression != CHAR)){
                       // Lança erro de tipo incompatível com o comando 
-                      emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "WRITE", 0);
+                      emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "WRITE", linha);
                   }
                   // Recupera a próxima lista
                   expressionList = expressionList->expressionListNode;

@@ -10,6 +10,7 @@
 #include "AnalLex.h"
 #include "AnalSint.h"
 #include "VerificadorEscopo.h"
+#include "VerificadorTipos.h"
 
 using namespace std;
 
@@ -46,8 +47,15 @@ int main(int argc, char *argv[])
 
    imprimirASAbstrata(ASA);
        
-       VerificadorEscopo* verif = new VerificadorEscopo();
-       ASA->accept(verif);
+       // Inicia a verificação de escopo e declaração de variáveis
+       VerificadorEscopo* verifEscopo = new VerificadorEscopo();
+       ASA->accept(verifEscopo);
+       
+       // Inicia a verificação de tipos
+       VerificadorTipos* verifTipos = new VerificadorTipos();
+       ASA->accept(verifTipos);
+       
+       
 
    imprimeTabSimbolos();
  

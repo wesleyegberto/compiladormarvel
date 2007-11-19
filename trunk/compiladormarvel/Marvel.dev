@@ -1,7 +1,7 @@
 [Project]
 FileName=Marvel.dev
 Name=Marvel
-UnitCount=28
+UnitCount=26
 Type=1
 Ver=1
 ObjFiles=
@@ -299,26 +299,6 @@ BuildCmd=
 FileName=VerificadorEscopo.h
 CompileCpp=1
 Folder=Analisador Semantico/Escopo
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit27]
-FileName=AnalSemantico.h
-CompileCpp=1
-Folder=Analisador Semantico
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit28]
-FileName=AnalSemantico.cpp
-CompileCpp=1
-Folder=Analisador Semantico
 Compile=1
 Link=1
 Priority=1000

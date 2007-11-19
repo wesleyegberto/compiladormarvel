@@ -15,6 +15,9 @@ int temParametro;
 //Define o "pai" do escopo Atual
 REGISTRO *paiAtual;
  
+// Retorna a linha atual
+int retornaLinha();
+
 // Implementa o construtor da classe de Verificação de Escopo
 VerificadorEscopo::VerificadorEscopo(){
     nivelEscopo = -1;
@@ -23,8 +26,6 @@ VerificadorEscopo::VerificadorEscopo(){
     paiAtual = NULL;
 }
 /*---------------------------------------------------------------------------*/
-
-
 // Implementa os métodos visitantes, que devem verificar os escopos
 /*---------------------------------------------------------------------------*/
 
@@ -127,8 +128,9 @@ void VerificadorEscopo::visit(IdNode* idNode){
      }
           
      //EMITE ERRO!!!
-     printf("\nVariavel nao declarada %s\n", retornaCharToken(idNode->registro->indiceLexema));
-
+     emiteErroSemantico(ERRO_VARIAVEL_NAO_DECLARADA,
+                        retornaCharToken(idNode->registro->indiceLexema),
+                        idNode->registro->linha);
 }
 
 void VerificadorEscopo::visit(IfNode* ifNode){
@@ -137,18 +139,14 @@ void VerificadorEscopo::visit(IfNode* ifNode){
     (ifNode->statementNode2)->accept(this);
 }
 
-void VerificadorEscopo::visit(LiteralNode* literalNode){
-
-}
+void VerificadorEscopo::visit(LiteralNode* literalNode){}
 
 void VerificadorEscopo::visit(ModifierListNode* modifierListNode){
     if (modifierListNode->modifierNode)(modifierListNode->modifierNode)->accept(this);        
     if (modifierListNode->modifierListNode)(modifierListNode->modifierListNode)->accept(this);    
 }
 
-void VerificadorEscopo::visit(ModifierNode* modifierNode){
-
-}   
+void VerificadorEscopo::visit(ModifierNode* modifierNode){}   
 
 void VerificadorEscopo::visit(MultOpNode* multOpNode){
     (multOpNode->expressionNode1)->accept(this);
@@ -185,9 +183,7 @@ void VerificadorEscopo::visit(NameDeclNode* nameDeclNode){
                  nameDeclNode->idListNode->idNode->registro->param = paiAtual;
                  insereEscopo(nameDeclNode->idListNode->idNode->registro);
            }
-         
      }    
-    
 }
 
 void VerificadorEscopo::visit(NegativeNode* negativeNode){
@@ -198,9 +194,7 @@ void VerificadorEscopo::visit(NotNode* notNode){
     (notNode->expressionNode)->accept(this);
 }
 
-void VerificadorEscopo::visit(NumberNode* numberNode){
-
-}
+void VerificadorEscopo::visit(NumberNode* numberNode){}
 
 void VerificadorEscopo::visit(ProgramNode* programNode){
     iniciaEscopo();
@@ -221,7 +215,6 @@ void VerificadorEscopo::visit(RelOpNode* relOpNode){
 void VerificadorEscopo::visit(StatementListNode* stmtListNode){
      if ((stmtListNode->statementNode) != NULL) (stmtListNode->statementNode)->accept(this);
      if ((stmtListNode->statementListNode) != NULL) (stmtListNode->statementListNode)->accept(this);
-
 }
 
 void VerificadorEscopo::visit(WhileNode* whileNode){
@@ -240,7 +233,7 @@ void VerificadorEscopo::iniciaEscopo(){
 
 
 void VerificadorEscopo::terminaEscopo(){
-     multimap<int, REGISTRO*>::iterator itr = niveis.find(nivelEscopo);
+    multimap<int, REGISTRO*>::iterator itr = niveis.find(nivelEscopo);
     pair<int, REGISTRO*> p;
     int final =  niveis.count(nivelEscopo);
     for (int i = 0; i < final; i++){
@@ -261,17 +254,15 @@ REGISTRO *VerificadorEscopo::buscaNoEscopo(int nivel, REGISTRO *valor){
         if ((p.second->indiceLexema == valor->indiceLexema) && (p.second->ativo == 1)) return p.second;
        itr++;
     } 
-    
     return NULL;
-    
 }
 void VerificadorEscopo::insereEscopo(REGISTRO *entrada){
      if (buscaNoEscopo(nivelEscopo,entrada)==0){
             niveis.insert(pair<const int, REGISTRO*>(nivelEscopo,entrada));
             entrada->escopo = nivelEscopo;
      }else{
-           //INSERE ERRO!!!!
-           printf("Variavel já declarada!");
+           //EMITE ERRO!!!!
+           emiteErroSemantico(ERRO_VARIAVEL_JA_DECLARADA, retornaCharToken(entrada->indiceLexema), entrada->linha);
      }
      //busca na tabela de simbolos se já existe escopo senão insere
 }

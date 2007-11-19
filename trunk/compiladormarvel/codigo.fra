@@ -1,5 +1,6 @@
 FLOAT a;
 FLOAT b;
+INTEGER constante1;
 
 FRAGMENT INTEGER calcula;
     PARAM FLOAT k;

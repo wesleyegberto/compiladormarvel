@@ -24,8 +24,9 @@
 #define ERRO_COMANDO_SEM_EXPRESSAO            7005
 #define ERRO_TIPO_INCOMPATIVEL_CHAMADA_FRAG   7006
 #define ERRO_VARIAVEL_NAO_DECLARADA           7007
+#define ERRO_VARIAVEL_JA_DECLARADA            7008
 
-// nvia uma mensagem de erro para stderr referente ao erro sintático
+// Envia uma mensagem de erro para stderr referente ao erro sintático
 void emiteErroLexico(int, int);
 
 // Envia uma mensagem de erro para stderr referente ao erro sintático

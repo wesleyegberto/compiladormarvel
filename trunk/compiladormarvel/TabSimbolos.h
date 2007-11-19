@@ -19,6 +19,7 @@ typedef struct Registro {
     int              offset;           // Offset do Registro
     int              ativo;            //Verifica se a variave esta ativa ou não
     struct Registro  *prox;            // Proximo registro
+    int              linha;
 } REGISTRO;
 
 #endif

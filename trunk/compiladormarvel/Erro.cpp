@@ -18,14 +18,15 @@ char *retornaLiteralToken(int token);
 #define MSG_ERRO_EOF_SINTATICO(linha)               fprintf(stderr, "\nFIM DE ARQUIVO NAO ESPERADO NA LINHA %d.\n", linha)
 
 /* Definicao de mensagens para erro durante analise semântica */
-#define MSG_TIPOS_INCOMPATIVEIS_OPERACAO(string, linha)     fprintf(stderr, "\nERRO: OS TIPOS SÃO INCOMPATÍVEIS COM A OPERAÇÃO %s, LINHA %d.\n",string , linha)
-#define MSG_TIPOS_INCOMPATIVEIS(linha)                        fprintf(stderr, "\nERRO: OS TIPOS DA OPERAÇÃO SÃO INCOMPATÍVEIS ENTRE SI, LINHA %d .\n",linha)
-#define MSG_TIPO_INCOMPATIVEL_INDICE_ARRAY(linha)             fprintf(stderr, "\nERRO: NA LINHA %d, O TIPO RETORNADO PELA EXPRESSAO PARA REFERENCIA DO VETOR NÃO É INTEIRO.\n", linha)
-#define MSG_TIPO_INCOMPATIVEL_ATRIBUICAO(linha)               fprintf(stderr, "\nERRO: A ATRIBUIÇÃO NÃO ESTÁ SENDO REALIZADA COM EXPRESSÕES DO MESMO TIPO NA LINHA %d.\n", linha)
-#define MSG_ERRO_EXPRESSAO_NAO_BOOLEANA(linha)                fprintf(stderr, "\nERRO: A CLÁUSULA DA CONDIÇÃO IF NA LINHA %d NÃO RETORNA VALOR BOOLEANO.\n", linha)
-#define MSG_ERRO_COMANDO_SEM_EXPRESSAO(string, linha)       fprintf(stderr, "\nERRO: COMANDO %s SEM EXPRESSÃO NA LINHA %d.\n", string, linha)
-#define MSG_ERRO_TIPO_INCOMPATIVEL_CHAMADA_FRAG(linha)        fprintf(stderr, "\nERRO: TIPO INCOMPATIVEL NA CHAMADA DO FRAGMENTO, LINHA %d.\n", linha)
+#define MSG_TIPOS_INCOMPATIVEIS_OPERACAO(string, linha)     fprintf(stderr, "\nERRO: OS TIPOS SAO INCOMPATIVEIS COM A OPERACAO %s, LINHA %d.\n",string , linha)
+#define MSG_TIPOS_INCOMPATIVEIS(linha)                      fprintf(stderr, "\nERRO: OS TIPOS DA OPERACAO SAO INCOMPATIVEIS ENTRE SI, LINHA %d .\n",linha)
+#define MSG_TIPO_INCOMPATIVEL_INDICE_ARRAY(linha)           fprintf(stderr, "\nERRO: NA LINHA %d, O TIPO RETORNADO PELA EXPRESSAO PARA REFERENCIA DO VETOR NAO E INTEIRO.\n", linha)
+#define MSG_TIPO_INCOMPATIVEL_ATRIBUICAO(linha)             fprintf(stderr, "\nERRO: A ATRIBUIÇÃO NAO ESTA SENDO REALIZADA COM EXPRESSOES DO MESMO TIPO NA LINHA %d.\n", linha)
+#define MSG_ERRO_EXPRESSAO_NAO_BOOLEANA(linha)              fprintf(stderr, "\nERRO: A CLÁUSULA DA CONDICAO IF NA LINHA %d NAO RETORNA VALOR BOOLEANO.\n", linha)
+#define MSG_ERRO_COMANDO_SEM_EXPRESSAO(string, linha)       fprintf(stderr, "\nERRO: COMANDO %s SEM EXPRESSAO NA LINHA %d.\n", string, linha)
+#define MSG_ERRO_TIPO_INCOMPATIVEL_CHAMADA_FRAG(linha)      fprintf(stderr, "\nERRO: TIPO INCOMPATIVEL NA CHAMADA DO FRAGMENTO, LINHA %d.\n", linha)
 #define MSG_ERRO_VARIAVEL_NAO_DECLARADA(linha, string)      fprintf(stderr, "\nERRO: VARIAVEL NAO DECLARADA %s NA LINHA %d.\n", string, linha)
+#define MSG_ERRO_VARIAVEL_JA_DECLARADA(linha, string)       fprintf(stderr, "\nERRO: VARIAVEL JA DECLARADA %s NA LINHA %d.\n", string, linha)
 
 //Envia uma mensagem de erro para stderr referente a erro lexico
 void emiteErroLexico(int codigo, int linha){
@@ -101,6 +102,9 @@ void emiteErroSemantico(int codigo, char* string, int linha){
             break;
          case(ERRO_VARIAVEL_NAO_DECLARADA):
             MSG_ERRO_VARIAVEL_NAO_DECLARADA(linha, string);
+            break;
+         case(ERRO_VARIAVEL_JA_DECLARADA):
+            MSG_ERRO_VARIAVEL_JA_DECLARADA(linha, string);
             break;
          } // end switch
 } // fim da função

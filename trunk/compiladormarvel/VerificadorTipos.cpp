@@ -63,7 +63,7 @@ void VerificadorTipos::visit(ArrayNode* arrayNode){
         emiteErroSemantico(ERRO_TIPO_INCOMPATIVEL_INDICE_ARRAY, NULL, linha);
      }
      
-     // Estabelecer uma forma de verificar se o valor passado pertence ao inter
+     // Estabelecer uma forma de verificar se o valor passado pertence ao inter-
      // valo que define os elementos do array.
      
      tipo = tipoArray;    
@@ -163,7 +163,11 @@ void VerificadorTipos::visit(ConstantNode* constantNode){
      }
 }
 
-void VerificadorTipos::visit(ExpressionListNode* expressionListNode){}
+void VerificadorTipos::visit(ExpressionListNode* expressionListNode){
+     (expressionListNode->expressionNode->accept(this));
+     if (expressionListNode->expressionListNode)
+        (expressionListNode->expressionListNode->accept(this));
+}
 
 void VerificadorTipos::visit(FragCallNode* fragCallNode){
      // Chama o visitante do FragCallNode para recuperar o tipo do id
@@ -202,10 +206,10 @@ void VerificadorTipos::visit(IdListNode* idListNode){
 }
 
 void VerificadorTipos::visit(IdNode* idNode){
-     fprintf(stdout, "---------------------------------------------------\n");
-     fprintf(stdout, "variavel: %s\n", retornaCharToken(idNode->registro->indiceLexema));     
-     fprintf(stdout, "tipo do no: %d\n", idNode->registro->tipo);
-     fprintf(stdout, "numero da linha: %d\n", idNode->registro->linha);     
+//     fprintf(stdout, "---------------------------------------------------\n");
+//     fprintf(stdout, "variavel: %s\n", retornaCharToken(idNode->registro->indiceLexema));     
+//     fprintf(stdout, "tipo do no: %d\n", idNode->registro->tipo);
+//     fprintf(stdout, "numero da linha: %d\n", idNode->registro->linha);     
      tipo = idNode->registro->tipo;
      linha = idNode->registro->linha;
 }

@@ -1,4 +1,9 @@
 #include "ImpressaoArvoreAbstrata.h"
+#include "ClassesArvoreAbstrata.h"
+#include "Tokens.h"
+#include <stdio.h>
+
+char* retornaCharToken(int pos);
 
 /* ----------------------------------------------------------------------------
   Implementação do construtor e dos métodos visitantes da

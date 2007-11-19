@@ -1,4 +1,6 @@
 #include "VerificadorEscopo.h"
+#include "ClassesArvoreAbstrata.h"
+#include <stdio.h>
 
 /* ----------------------------------------------------------------------------
 

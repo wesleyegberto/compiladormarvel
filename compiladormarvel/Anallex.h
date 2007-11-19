@@ -9,12 +9,6 @@
   tokens estão definidos em tokens.h.
 */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include "Tokens.h"
-
 /* Definição de valores */
 #define SPACE           ' '
 #define TAB             '\t'

@@ -4,14 +4,18 @@
  *          Analisador Sintático
  * 
  */
-
 #include "AnalSint.h"
-#include "AnalLex.h"
-#include "Erro.h"
+#include <stdio.h>
 #include "ImpressaoArvoreAbstrata.h"
+#include "Tokens.h"
+#include "TabSimbolos.h"
+#include "Erro.h"
+
+int proxToken();
+int retornaLinha();
+char *retornaLiteralToken(int token);
 
 int lookahead;
-
 
 //Imprime a Arvore de Sintaxe Abstrata
 void imprimirASAbstrata(ProgramNode* prgmNode){
@@ -56,7 +60,7 @@ ProgramNode* program(){
 }
 
 //Follow de StatementList
-int followStatementList[] = {SMCLN, ENDFRAGMENT, EOF};
+int followStatementList[] = {EOF, ENDFRAGMENT};
 
 //Produção StatementList
 StatementListNode* statementList(){
@@ -67,7 +71,7 @@ StatementListNode* statementList(){
 }
 
 //Follow de StatementListLinha
-int followStatementListLinha[] = {SMCLN, ENDFRAGMENT, EOF};
+int followStatementListLinha[] = {EOF, ENDFRAGMENT};
 
 //Produção StatementList'
 StatementListNode* statementListLinha(StatementNode* stmLinha){
@@ -82,16 +86,16 @@ StatementListNode* statementListLinha(StatementNode* stmLinha){
 
 
 //Follow de Statement
-int followStatement[] = {SMCLN, ID, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followStatement[] = {ELSE, SMCLN, EOF, ENDFRAGMENT};
 
 //Follow de Statement''
-int followStatementDuasLinhas[] = {SMCLN, ID, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followStatementDuasLinhas[] = {ELSE, SMCLN, EOF, ENDFRAGMENT};
 
 //Follow de Destiny
-int followDestiny[] = {SMCLN, ID, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followDestiny[] = {ELSE, SMCLN, EOF, ENDFRAGMENT};
 
 //Follow de Fragcall
-int followFragcall[] = {SMCLN, ID, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followFragcall[] = {ELSE, SMCLN, EOF, ENDFRAGMENT};
 
 //Produção Statement
 StatementNode* statement(){
@@ -101,7 +105,7 @@ printf("Statement\n");
             REGISTRO *regi = retornaRegistroAtual();
             IdNode* idStm = new IdNode(lexema, regi);
             match(ID, followStatement, &lexema);       
-               return statementDuasLinhas(idStm);         
+            return statementDuasLinhas(idStm);         
       }else if (lookahead == IF){
             match(IF,followStatement, NULL);
             ExpressionNode* exp = expression();
@@ -162,7 +166,7 @@ StatementNode* statementDuasLinhas(IdNode *idDuasLinhas){
 }      
 
 //Follow de Statement'
-int followStatementLinha[] = {SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followStatementLinha[] = {ELSE, SMCLN, EOF, ENDFRAGMENT};
 
 //Produção Statement'
 StatementNode* statementLinha(){
@@ -174,7 +178,7 @@ StatementNode* statementLinha(){
 }
 
 //Follow de NameDecl
-int followNameDecl[] = {SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followNameDecl[] = {ELSE, SMCLN, EOF, ENDFRAGMENT};
 
 //Produção NameDecl
 NameDeclNode* namedecl(){
@@ -185,7 +189,7 @@ NameDeclNode* namedecl(){
 }
 
 //Follow de Fragment
-int followFragment[] = {SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followFragment[] = {ELSE, SMCLN, EOF, ENDFRAGMENT};
 
 //Produção Fragment
 StatementNode* fragment(){
@@ -239,7 +243,7 @@ StatementNode* fragment(){
 
 
 //Follow de Expression
-int followExpression[] = {FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND, CLOSEPAR, CLOSEBRA, EOF};
+int followExpression[] = {FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 //Produção Expression
 ExpressionNode* expression(){
@@ -261,7 +265,7 @@ ExpressionNode* expression(){
 }
 
 //Follow de Expression'
-int followExpressionLinha[] = {OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND, CLOSEBRA, CLOSEPAR, EOF};
+int followExpressionLinha[] = {OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 //Produção Expression'
 ExpressionNode* expressionLinha(ExpressionNode* sexprE){
@@ -275,7 +279,7 @@ ExpressionNode* expressionLinha(ExpressionNode* sexprE){
 }
 
 //Follow de Expression''
-int followExpressionDuasLinhas[] = {FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND,  CLOSEPAR, CLOSEBRA, EOF};
+int followExpressionDuasLinhas[] = {FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 //Produção Expression''
 ExpressionNode* expressionDuasLinhas(ExpressionNode* cmpExprE){
@@ -292,7 +296,7 @@ ExpressionNode* expressionDuasLinhas(ExpressionNode* cmpExprE){
 }
 
 //Follow de BoolExp
-int followBoolExp[] = {FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND, CLOSEBRA, CLOSEPAR, EOF};
+int followBoolExp[] = {FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 
 //Produção BoolExp
@@ -304,7 +308,7 @@ ExpressionNode* boolExp(ExpressionNode* boolExprE){
 }
 
 //Follow de Bool_Or
-int followBool_Or[] = {AND, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, CLOSEPAR, CLOSEBRA, CLOSEPAR, EOF};
+int followBool_Or[] = {AND,  FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR};
 
 //Produção Bool_Or
 ExpressionNode* boolOr(ExpressionNode* orExprE){
@@ -318,7 +322,7 @@ ExpressionNode* boolOr(ExpressionNode* orExprE){
 }
 
 //Follow de Bool_and
-int followBool_and[] = {FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND, CLOSEBRA, CLOSEPAR, EOF};
+int followBool_and[] = {FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 //Produção Bool_and
 ExpressionNode* boolAnd(ExpressionNode* andExprE){
@@ -333,7 +337,7 @@ ExpressionNode* boolAnd(ExpressionNode* andExprE){
 }
 
 //Follow de Expr_List
-int followExpr_List[] = {CLOSEPAR, EOF};
+int followExpr_List[] = {CLOSEPAR};
 
 //Produção Expr_List
 ExpressionListNode* expressionList(){
@@ -345,7 +349,7 @@ ExpressionListNode* expressionList(){
 }
 
 //Follow de Expr_List'
-int followExpr_ListLinha[] = {COMMA, CLOSEPAR, EOF};
+int followExpr_ListLinha[] = {CLOSEPAR};
 
 //Produção Expr_List'
 ExpressionListNode* expressionListLinha(){
@@ -359,7 +363,7 @@ ExpressionListNode* expressionListLinha(){
 }
 
 //Follow de ModifierList
-int followModifierList[] = {ID, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followModifierList[] = {ID};
 
 //Produção ModifierList
 ModifierListNode* modifierList(){
@@ -372,7 +376,7 @@ ModifierListNode* modifierList(){
 
 
 //Follow de ModifierList'
-int followModifierListLinha[] = {ID, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followModifierListLinha[] = {ID};
 
 //Produção ModifierList'
 ModifierListNode* modifierListLinha(ModifierNode* modV){
@@ -385,7 +389,7 @@ ModifierListNode* modifierListLinha(ModifierNode* modV){
 
 
 //Follow de Id_List
-int followId_List[] = {SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followId_List[] = {ELSE, SMCLN, EOF, ENDFRAGMENT};
 
 //Produção Id_List
 IdListNode* idList(){
@@ -402,7 +406,7 @@ IdListNode* idList(){
 }
 
 //Follow de Id_List'
-int followId_ListLinha[] = {SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followId_ListLinha[] = {ELSE, SMCLN, EOF, ENDFRAGMENT};
 
 //Produção Id_List'
 IdListNode* idListLinha(){
@@ -419,7 +423,7 @@ IdListNode* idListLinha(){
 }
 
 //Follow de Simple_Exp
-int followSimple_Exp[] = {LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND, CLOSEPAR, CLOSEBRA, EOF};
+int followSimple_Exp[] = {LT, LE, GT, GE, OR,  AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 //Produção Simple_Exp
 ExpressionNode* simpleExpression(){
@@ -438,7 +442,7 @@ ExpressionNode* simpleExpression(){
 }
 
 //Follow de Simple_Exp'
-int followSimple_ExpLinha[] = {LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND, CLOSEPAR, CLOSEBRA, EOF};
+int followSimple_ExpLinha[] = {LT, LE, GT, GE, OR,  AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 //Produção Simple_Exp'
 ExpressionNode* simpleExpressionLinha(ExpressionNode* addExpE){
@@ -454,7 +458,7 @@ ExpressionNode* simpleExpressionLinha(ExpressionNode* addExpE){
 
 
 //Follow de Comp_Op
-int followComp_Op[] = {ID, NOT, NUM, OPENPAR, PLUS, MINUS, LITERAL, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, CLOSEPAR, CLOSEBRA, EOF};
+int followComp_Op[] = {ID, NOT, NUM, OPENPAR, PLUS, MINUS, LITERAL};
 
 //Produção Comp_Op
 int compOp(){
@@ -469,7 +473,7 @@ int compOp(){
 }
 
 //Follow de Rel_Op
-int followRel_Op[] = {ID, NOT, NUM, OPENPAR, PLUS, MINUS, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND, CLOSEPAR, CLOSEBRA, EOF};
+int followRel_Op[] = {ID, NOT, NUM, OPENPAR, PLUS, MINUS};
 
 //Produção Rel_Op
 int relOp(){
@@ -490,7 +494,7 @@ int relOp(){
 }
 
 //Follow de Modifier
-int followModifier[] = {FLOAT, INTEGER, PARAM, VECTOR, ID, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, EOF};
+int followModifier[] = {FLOAT, INTEGER, PARAM, VECTOR, ID};
 
 //Produção Modifier
 ModifierNode* modifier(){
@@ -515,7 +519,7 @@ ModifierNode* modifier(){
 }
 
 //Follow de Term
-int followTerm[] = {PLUS, MINUS, BITOR, LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, CLOSEPAR, CLOSEBRA, EOF};
+int followTerm[] = {PLUS, MINUS, BITOR, LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 //Produção Term
 ExpressionNode* term(){
@@ -527,7 +531,7 @@ ExpressionNode* term(){
 
 
 //Follow de Term'
-int followTermLinha[] = {PLUS, MINUS, BITOR, LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, CLOSEPAR, CLOSEBRA, EOF};
+int followTermLinha[] = {PLUS, MINUS, BITOR, LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 //Produção Term'
 ExpressionNode* termLinha(ExpressionNode* multExpE){
@@ -541,7 +545,7 @@ ExpressionNode* termLinha(ExpressionNode* multExpE){
 }
 
 //Follow de Sign
-int followSign[] = {ID, NOT, NUM, OPENPAR, EOF};
+int followSign[] = {ID, NOT, NUM, OPENPAR};
 
 //Produção Sign
 int signOp(){
@@ -556,7 +560,7 @@ int signOp(){
 }
 
 //Follow de Add_Op
-int followAdd_Op[] = {ID, NOT, NUM, OPENPAR, PLUS, MINUS, LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND, CLOSEPAR, CLOSEBRA, EOF};
+int followAdd_Op[] = {ID, NOT, NUM, OPENPAR, PLUS, MINUS};
 
 //Produção Add_Op
 int addOp(){
@@ -574,7 +578,7 @@ int addOp(){
 }
 
 //Follow de Mult_Op
-int followMult_Op[] = {ID, NOT, NUM, OPENPAR, PLUS, MINUS, BITOR, LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, CLOSEBRA, CLOSEPAR, EOF};
+int followMult_Op[] = {ID, NOT, NUM, OPENPAR};
 
 //Produção Mult_Op
 int multOp(){
@@ -595,7 +599,7 @@ int multOp(){
 }
 
 //Follow de Factor
-int followFactor[] = {PLUS, MINUS, BITOR, LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND, CLOSEBRA, CLOSEPAR, EOF};
+int followFactor[] = {MULT, DIV, MOD, BITAND, PLUS, MINUS, BITOR, LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 //Produção Factor
 ExpressionNode* factor(){
@@ -622,7 +626,7 @@ ExpressionNode* factor(){
 }
 
 //Follow de Factor'
-int followFactorLinha[] = {MULT, DIV, MOD, BITAND, PLUS, MINUS, BITOR, LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, COMMA, SMCLN, ASSIGN, OPENBRA, OPENPAR, ENDFRAGMENT, AND, CLOSEBRA, CLOSEPAR, EOF};
+int followFactorLinha[] = {MULT, DIV, MOD, BITAND, PLUS, MINUS, BITOR, LT, LE, GT, GE, OR, AND, EQUALS, NE, FLOAT, INTEGER, PARAM, VECTOR, FRAGMENT, ID, IF, WHILE, WRITE, READ, ELSE, SMCLN, EOF, ENDFRAGMENT, CLOSEBRA, COMMA, CLOSEPAR, AND};
 
 //Produção Factor'
 ExpressionNode* factorLinha(IdNode* idN){
@@ -644,38 +648,38 @@ ExpressionNode* factorLinha(IdNode* idN){
 // Função que casa o token lido com o esperado
 // ou faz a sincronização caso o token não case
 void match(int token, int follow[], int* iLexema){
-    
-    if(iLexema) printf("Match: %s.%s\n", retornaLiteralToken(token), retornaCharToken(*iLexema));
-    else        printf("Match: %s\n", retornaLiteralToken(token));
-    if(lookahead == token) { // token casou com o esperado
+    // token casou com o esperado
+    if(lookahead == token) { 
+          if(iLexema) printf("Match: %s.%s\n", retornaLiteralToken(token), retornaCharToken(*iLexema));
+          else        printf("Match: %s\n", retornaLiteralToken(token));
           // Pega o proximo token esperado        
-                   if (token != EOF) lookahead = proxToken();
+          if (token != EOF) lookahead = proxToken();
     }
-    else{ //token encontrado não é o esperado
-        if(lookaheadPertenceFollow(follow) == 1 ) {                       //se o proximo token pertence ao follow da produção atual
-            emiteErroSintatico(ERRO_TOKEN_ESPERADO,token,retornaLinha()); //emite o erro e continua a analise
+    //token encontrado não é o esperado
+    else{ 
+        if (token == EOF) {                                               //igual fim de arquivo
+            emiteErroSintatico(ERRO_TOKEN_ESPERADO,token,retornaLinha()); //emite o erro
             return;
-        }else if (token == EOF){                                          //token esperado é erroneamente fim de arquivo
-            lookahead = proxToken();                                      //Pega o proximo token valido
+        }else if(lookaheadPertenceFollow(follow)){                        //pertence ao follow
             emiteErroSintatico(ERRO_TOKEN_ESPERADO,token,retornaLinha()); //Emite erro
-            return;
-        }else{
-           lookahead = proxToken();                                       //token não pertence ao follow da produção atual e não é fim de arquivo
-            while ((lookaheadPertenceFollow(follow)==0)||(lookahead == token)){ //procura o proximo token valido
+        }else{                                                            //token não pertence ao follow da produção atual e não é fim de arquivo
+           lookahead = proxToken();                                       
+           while ((lookaheadPertenceFollow(follow)==0)||(lookahead == token)){ //procura o proximo token valido
                  if (lookahead==EOF) break;
                  emiteErroSintatico(ERRO_TOKEN_ESPERADO,token,retornaLinha()); 
-                lookahead = proxToken();                                        //retorna o proximo token
-            }
+           }
         }
         emiteErroSintatico(ERRO_TOKEN_INVALIDO,token,retornaLinha());           //Emite erro
+        lookahead = proxToken();                                        //retorna o proximo token
      }
 }
 
 
 // Retorna se o lookahead pertence ao follow
 int lookaheadPertenceFollow(int follow[]){
-  int i; 
-  for(i=0;follow[i]!=EOF;i++)
+  int i;
+  int tamanho = sizeof(follow) / sizeof(follow[0]);
+  for(i=0; i < tamanho; i++)
   if(follow[i] == lookahead) return 1;    
   return 0;  
 }

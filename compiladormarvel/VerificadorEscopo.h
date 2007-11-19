@@ -1,14 +1,12 @@
 /*
 */
-#include "Visitor.h"
-#include "ClassesArvoreAbstrata.h"
-#include "TabSimbolos.h"
-#include <stdio.h>
 
 
 #ifndef VERIFICADORESCOPO_H
 #define VERIFICADORESCOPO_H
 
+#include "Visitor.h"
+#include "TabSimbolos.h"
 
 // Define os atributos e métodos visitantes.
 class VerificadorEscopo : public Visitor {

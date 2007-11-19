@@ -1,4 +1,5 @@
 #include "ClassesArvoreAbstrata.h"
+#include <stdio.h>
 
 ProgramNode::ProgramNode(StatementListNode* sln) : stmtListNode(sln) {}
 void ProgramNode::accept(Visitor* v) {v->visit(this);}

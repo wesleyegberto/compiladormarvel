@@ -1,5 +1,10 @@
 #include "TabSimbolos.h"
-#include "AnalLex.h"
+#include <stdlib.h>
+#include "Tokens.h"
+#include <string.h>
+#include "Erro.h"
+
+char *retornaToken(int);
 
 REGISTRO *tabelaSimbolos[HASHPRIME];
 ARRAY_LEXEMAS arrayLexemas;

@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include "Erro.h"
-
 #define EOS                '\0'
 #define BSIZE              4096            // Tamanho de caracteres lidos por vez (buffer)
 #define BTOTAL             (2 * BSIZE) + 1 // Tamanho total do buffer duplo com 2 sentinelas

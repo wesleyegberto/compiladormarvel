@@ -5,12 +5,7 @@
     seus construtores e a definição do método accept, que será invocado
     utilizando o padrão visitor.
 */
-#include <stdio.h>
-#include <cstdlib>
-#include <iostream>
 #include "Visitor.h"
-#include "TabSimbolos.h"
-
 
 using namespace std;
 

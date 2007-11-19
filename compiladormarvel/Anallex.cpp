@@ -4,8 +4,21 @@
  * 
  */
 #include "Anallex.h"
-#include "Buffer.h"
+#include "Tokens.h"
+#include "Erro.h"
 #include "TabSimbolos.h"
+#include <ctype.h>
+#include <stdio.h>
+
+char proxCaractere();
+void limpaLexema();
+void concatenaLexema(char caractere);
+void devolveCaractere();
+char *retornaLexema();
+int insereTabSimbolos(int, char*);
+REGISTRO *buscaTabSimbolos(char*);
+void inicializaBuffer(char *);
+void finalizaBuffer();
 
 /* Variável que define a linha lida */
 int linha = 1;

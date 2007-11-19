@@ -3,11 +3,10 @@
   Visitor (é a implementação de Visitor para o caso em que a declaração
   das variáveis é verificada).
 */
-#include "Visitor.h"
-#include <stdio.h>
-
 #ifndef VERIFICADORVARIAVEIS_H
 #define VERIFICADORVARIAVEIS_H
+
+#include "Visitor.h"
 
 // Define os atributos e os métodos visitantes
 class VerificadorVariaveis : public Visitor {

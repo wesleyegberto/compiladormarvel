@@ -50,14 +50,16 @@ int main(int argc, char *argv[])
        // Inicia a verificação de escopo e declaração de variáveis
        VerificadorEscopo* verifEscopo = new VerificadorEscopo();
        ASA->accept(verifEscopo);
-       
+
+   imprimeTabSimbolos();
+          
        // Inicia a verificação de tipos
        VerificadorTipos* verifTipos = new VerificadorTipos();
        ASA->accept(verifTipos);
        
        
 
-   imprimeTabSimbolos();
+
  
    finalizaAnalisadorLexico();
 

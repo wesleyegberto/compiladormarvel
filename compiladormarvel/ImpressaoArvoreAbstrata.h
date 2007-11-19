@@ -9,12 +9,12 @@
 
 // Define os atributos e métodos visitantes.
 class ImpressaoArvoreAbstrata : public Visitor {
-      public:
+      private:
              // Define o nível atual da árvore
              int nivel;
       public:
              // Declaração do construtor
-             ImpressaoArvoreAbstrata(int nvl);
+             ImpressaoArvoreAbstrata();
              
              // Métodos visitantes
               void visit(ProgramNode* programNode);

@@ -85,7 +85,7 @@ int proxToken(){
                 concatenaLexema(c);
                 if (isdigit(c))    state = 1;
                 else if (c == '.') state = 2;                // Verifica se é ponto - número decimal
-                else if (c == 'E') state = 4;                // Verifica se é E - número real
+                else if ((c == 'E') || (c == 'e')) state = 4;// Verifica se é E - número real
                 else {                                       // Outra transição - state final 7
                     state = 0;
                     devolveCaractere();

@@ -24,7 +24,7 @@ void imprimirASAbstrata(ProgramNode* prgmNode){
     printf("ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ\n");
      
      if (prgmNode != NULL){
-       ImpressaoArvoreAbstrata* impressao = new ImpressaoArvoreAbstrata(0);
+       ImpressaoArvoreAbstrata* impressao = new ImpressaoArvoreAbstrata();
        prgmNode->accept(impressao);
     }
     printf("อออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออ\n");

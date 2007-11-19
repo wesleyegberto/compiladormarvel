@@ -1,4 +1,4 @@
-FRAGMENT
+
     FLOAT a;
     FLOAT b;
     INTEGER constante1;
@@ -7,28 +7,19 @@ FRAGMENT
         PARAM FLOAT k;
         PARAM FLOAT h;
         FLOAT T;
-        T = h + constante1;
+        FRAGMENT constante2; 
+             "TESTE" 
+        ENDFRAGMENT;
+        FRAGMENT
+             FLOAT k;
+             FLOAT h; 
+             a = 2; 
+             b = 2 
+        ENDFRAGMENT;
+        T = h;
         WRITE (k," ",T," foram calculados")
     ENDFRAGMENT;
     
-    FRAGMENT FLOAT constante1; 
-             4
-    ENDFRAGMENT;
+    FLOAT x;
     
-    FRAGMENT constante2; 
-             "TESTE" 
-    ENDFRAGMENT;
-    
-    FRAGMENT 
-             a = 2; 
-             b = 2 
-    ENDFRAGMENT;
-    
-    INTEGER s;
-    
-    s = 1 + b;
-    
-    calcula(s,a);
-    
-ENDFRAGMENT
-
+    x = a

@@ -13,20 +13,20 @@ char *retornaLiteralToken(int token);
 #define MSG_ERRO_ABRIR_ARQUIVO                      fprintf(stderr, "\nERRO AO ABRIR ARQUIVO.\n")
 
 /* Definicao de mensagens para erro durante análise sintática */
-#define MSG_TOKEN_ESPERADO(token,linha)             fprintf(stderr, "\nERRO: %s ESPERADO E NAO ENCONTRADO NA LINHA %d.\n",token,linha)
-#define MSG_TOKEN_INVALIDO(token,linha)             fprintf(stderr, "\nERRO: %s NAO E VALIDO NA LINHA %d.\n",token,linha)
+#define MSG_TOKEN_ESPERADO(token,linha)             fprintf(stderr, "\nERRO: %s ESPERADO E NAO ENCONTRADO NA INSTRUCAO DA LINHA %d.\n",token,linha)
+#define MSG_TOKEN_INVALIDO(token,linha)             fprintf(stderr, "\nERRO: %s NAO ESPERADO VALIDO NA INSTRUCAO DA LINHA %d.\n",token,linha)
 #define MSG_ERRO_EOF_SINTATICO(linha)               fprintf(stderr, "\nFIM DE ARQUIVO NAO ESPERADO NA LINHA %d.\n", linha)
 
 /* Definicao de mensagens para erro durante analise semântica */
-#define MSG_TIPOS_INCOMPATIVEIS_OPERACAO(string, linha)     fprintf(stderr, "\nERRO: OS TIPOS SAO INCOMPATIVEIS COM A OPERACAO %s, LINHA %d.\n",string , linha)
-#define MSG_TIPOS_INCOMPATIVEIS(linha)                      fprintf(stderr, "\nERRO: OS TIPOS DA OPERACAO SAO INCOMPATIVEIS ENTRE SI, LINHA %d .\n",linha)
-#define MSG_TIPO_INCOMPATIVEL_INDICE_ARRAY(linha)           fprintf(stderr, "\nERRO: NA LINHA %d, O TIPO RETORNADO PELA EXPRESSAO PARA REFERENCIA DO VETOR NAO E INTEIRO.\n", linha)
-#define MSG_TIPO_INCOMPATIVEL_ATRIBUICAO(linha)             fprintf(stderr, "\nERRO: A ATRIBUIÇÃO NAO ESTA SENDO REALIZADA COM EXPRESSOES DO MESMO TIPO NA LINHA %d.\n", linha)
-#define MSG_ERRO_EXPRESSAO_NAO_BOOLEANA(linha)              fprintf(stderr, "\nERRO: A CLÁUSULA DA CONDICAO IF NA LINHA %d NAO RETORNA VALOR BOOLEANO.\n", linha)
+#define MSG_TIPOS_INCOMPATIVEIS_OPERACAO(string, linha)     fprintf(stderr, "\nERRO: TIPO DO IDENTIFICADOR %s NAO E ESPERADO OU E INCOMPATIVEL COM A OPERACAO NA LINHA %d.\n", string, linha)
+#define MSG_TIPOS_INCOMPATIVEIS(linha)                      fprintf(stderr, "\nERRO: TIPOS NAO COMPATIVEIS NA OPERACAO DA LINHA %d.\n", linha)
+#define MSG_TIPO_INCOMPATIVEL_INDICE_ARRAY(linha)           fprintf(stderr, "\nERRO: TIPO INCOMPATIVEL COM INDICE DE ARRAY SENDO RETORNADO NA EXPRESSAO OU INSTRUCAO DA LINHA %d. O TIPO ESPERADO E INTEIRO.\n", linha)
+#define MSG_TIPO_INCOMPATIVEL_ATRIBUICAO(linha)             fprintf(stderr, "\nERRO: TIPOS INCOMPATIVEIS COM O IDENTIFICADOR DURANTE A ATRIBUICAO NA LINHA %d.\n", linha)
+#define MSG_ERRO_EXPRESSAO_NAO_BOOLEANA(linha)              fprintf(stderr, "\nERRO: EXPRESSAO NAO BOOLEANA EM TESTE CONDICIONAL IF NA NA LINHA %d.\n", linha)
 #define MSG_ERRO_COMANDO_SEM_EXPRESSAO(string, linha)       fprintf(stderr, "\nERRO: COMANDO %s SEM EXPRESSAO NA LINHA %d.\n", string, linha)
 #define MSG_ERRO_TIPO_INCOMPATIVEL_CHAMADA_FRAG(linha)      fprintf(stderr, "\nERRO: TIPO INCOMPATIVEL NA CHAMADA DO FRAGMENTO, LINHA %d.\n", linha)
-#define MSG_ERRO_VARIAVEL_NAO_DECLARADA(linha, string)      fprintf(stderr, "\nERRO: VARIAVEL NAO DECLARADA %s NA LINHA %d.\n", string, linha)
-#define MSG_ERRO_VARIAVEL_JA_DECLARADA(linha, string)       fprintf(stderr, "\nERRO: VARIAVEL JA DECLARADA %s NA LINHA %d.\n", string, linha)
+#define MSG_ERRO_VARIAVEL_NAO_DECLARADA(linha, string)      fprintf(stderr, "\nERRO: VARIAVEL %s NAO DECLARADA NA LINHA %d.\n", string, linha)
+#define MSG_ERRO_VARIAVEL_JA_DECLARADA(linha, string)       fprintf(stderr, "\nERRO: VARIAVEL %s JA DECLARADA  NA LINHA %d.\n", string, linha)
 
 //Envia uma mensagem de erro para stderr referente a erro lexico
 void emiteErroLexico(int codigo, int linha){

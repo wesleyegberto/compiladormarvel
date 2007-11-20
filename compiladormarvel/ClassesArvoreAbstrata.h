@@ -103,6 +103,7 @@ class IdNode : public ExpressionNode {
         int     escopo;                    //indice do escopo que o id pertence
         int     ativo;                     //Se o id esta ativo(1) ou não(0)
         struct Registro  *registro;
+        int     linha;
     public:
         IdNode(int i, struct Registro  *reg);
         void accept(Visitor* visitor) ;
@@ -128,6 +129,7 @@ class NumberNode : public ExpressionNode {
     public:
         int               number;
         struct Registro  *registro;
+        int               linha;
     public:
         NumberNode(int n, struct Registro *reg);
         void accept(Visitor* visitor) ;

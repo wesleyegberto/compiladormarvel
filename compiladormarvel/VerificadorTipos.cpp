@@ -153,16 +153,19 @@ void VerificadorTipos::visit(CallNode* callNode){
 }
 
 void VerificadorTipos::visit(ConstantNode* constantNode){
-     (constantNode->accept(this));
-     int tipoConstantNode = tipo;
+     if (constantNode != NULL) {
+       // (constantNode->accept(this));
+        int tipoConstantNode = tipo;
      
-     if (tipoConstantNode == NUM) {
-        // O nó é do tipo NUM
-        tipo = INTEGER;
-     } else {
-        // Senão o nó é do tipo LITERAL, que no caso é interpretado como CHAR.
-        tipo = CHAR;
+        if (tipoConstantNode == NUM) {
+           // O nó é do tipo NUM
+           tipo = INTEGER;
+        } else {
+          // Senão o nó é do tipo LITERAL, que no caso é interpretado como CHAR.
+          tipo = CHAR;
+        }
      }
+     tipo = EMPTY;
 }
 
 void VerificadorTipos::visit(ExpressionListNode* expressionListNode){
@@ -214,7 +217,7 @@ void VerificadorTipos::visit(IdNode* idNode){
 //     fprintf(stdout, "tipo do no: %d\n", idNode->registro->tipo);
 //     fprintf(stdout, "numero da linha: %d\n", idNode->registro->linha);     
      tipo = idNode->registro->tipo;
-     linha = idNode->registro->linha;
+     linha = idNode->linha;
 }
 
 void VerificadorTipos::visit(IfNode* ifNode){
@@ -328,7 +331,7 @@ void VerificadorTipos::visit(NotNode* notNode){
 
 void VerificadorTipos::visit(NumberNode* numberNode){
      tipo = numberNode->registro->tipo;
-     linha = numberNode->registro->linha;
+     linha = numberNode->linha;
 }
 
 void VerificadorTipos::visit(ProgramNode* programNode){

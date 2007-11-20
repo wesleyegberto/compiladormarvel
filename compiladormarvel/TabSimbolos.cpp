@@ -107,7 +107,6 @@ int insereTabSimbolos(int token, char *lexema) {
     }
 
     // Preenche o registro
-    registro->linha = retornaLinha();
     registro->indiceLexema = indiceLexemaAtual;
     registro->token = token;
     registro->tipo = -1;

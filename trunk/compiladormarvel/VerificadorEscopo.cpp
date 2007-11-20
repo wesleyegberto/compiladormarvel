@@ -130,7 +130,7 @@ void VerificadorEscopo::visit(IdNode* idNode){
      //EMITE ERRO!!!
      emiteErroSemantico(ERRO_VARIAVEL_NAO_DECLARADA,
                         retornaCharToken(idNode->registro->indiceLexema),
-                        idNode->registro->linha);
+                        idNode->linha);
 }
 
 void VerificadorEscopo::visit(IfNode* ifNode){
@@ -262,7 +262,9 @@ void VerificadorEscopo::insereEscopo(REGISTRO *entrada){
             entrada->escopo = nivelEscopo;
      }else{
            //EMITE ERRO!!!!
-           emiteErroSemantico(ERRO_VARIAVEL_JA_DECLARADA, retornaCharToken(entrada->indiceLexema), entrada->linha);
+           emiteErroSemantico(ERRO_VARIAVEL_JA_DECLARADA, 
+                              retornaCharToken(entrada->indiceLexema),
+                              retornaLinha());
      }
      //busca na tabela de simbolos se já existe escopo senão insere
 }

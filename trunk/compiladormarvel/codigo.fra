@@ -10,8 +10,7 @@
         FRAGMENT constante2; 
              "TESTE" 
         ENDFRAGMENT;
-        FRAGMENT
-             FLOAT k;
+        FRAGMENT FLOAT ki;
              FLOAT h; 
              a = 2; 
              b = 2 
@@ -21,5 +20,7 @@
     ENDFRAGMENT;
     
     FLOAT x;
+    
+    ABAJUR 22;
     
     x = a

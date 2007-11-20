@@ -133,7 +133,8 @@ printf("Statement\n");
             return  namedecl();
       }else if (lookaheadPertenceFirst(Fragment) == 1){
             return fragment();
-      }else {emiteErroSintatico(ERRO_TOKEN_INVALIDO,lookahead,retornaLinha()); return NULL;}
+      }else {
+            emiteErroSintatico(ERRO_TOKEN_INVALIDO,lookahead,retornaLinha()); return NULL;}
 }
 
 // Produção StatementDuasLinhas

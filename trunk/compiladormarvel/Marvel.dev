@@ -1,7 +1,7 @@
 [Project]
 FileName=Marvel.dev
 Name=Marvel
-UnitCount=26
+UnitCount=27
 Type=1
 Ver=1
 ObjFiles=
@@ -21,7 +21,7 @@ OverrideOutput=0
 OverrideOutputName=Marvel.exe
 HostApplication=
 Folders="Analisador Lexico","Analisador Semantico","Analisador Semantico/Escopo","Analisador Semantico/Tipo","Analisador Semantico/Variavel","Analisador Sintatico","Arvore Sintaxe Abstrata",Buffer,Erro,"Tabela de Simbolos",Visitor
-CommandLine=codigo.fra
+CommandLine=codigo31.fra
 UseCustomMakefile=0
 CustomMakefile=
 IncludeVersionInfo=0
@@ -301,6 +301,15 @@ CompileCpp=1
 Folder=Analisador Semantico/Escopo
 Compile=1
 Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit27]
+FileName=codigo31.fra
+Folder=Marvel
+Compile=0
+Link=0
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=

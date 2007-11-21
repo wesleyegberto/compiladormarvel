@@ -20,6 +20,7 @@
     ENDFRAGMENT;
     
     FLOAT x;
+    FLOAT x;
     
     ABAJUR 22;
     

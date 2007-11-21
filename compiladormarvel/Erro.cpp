@@ -26,7 +26,7 @@ char *retornaLiteralToken(int token);
 #define MSG_ERRO_COMANDO_SEM_EXPRESSAO(string, linha)       fprintf(stderr, "\nERRO: COMANDO %s SEM EXPRESSAO NA LINHA %d.\n", string, linha)
 #define MSG_ERRO_TIPO_INCOMPATIVEL_CHAMADA_FRAG(linha)      fprintf(stderr, "\nERRO: TIPO INCOMPATIVEL NA CHAMADA DO FRAGMENTO, LINHA %d.\n", linha)
 #define MSG_ERRO_VARIAVEL_NAO_DECLARADA(linha, string)      fprintf(stderr, "\nERRO: VARIAVEL %s NAO DECLARADA NA LINHA %d.\n", string, linha)
-#define MSG_ERRO_VARIAVEL_JA_DECLARADA(linha, string)       fprintf(stderr, "\nERRO: VARIAVEL %s JA DECLARADA  NA LINHA %d.\n", string, linha)
+#define MSG_ERRO_VARIAVEL_JA_DECLARADA(linha, string)       fprintf(stderr, "\nERRO: VARIAVEL %s NA LINHA %d JA DECLARADA ANTES.\n", string, linha)
 
 //Envia uma mensagem de erro para stderr referente a erro lexico
 void emiteErroLexico(int codigo, int linha){

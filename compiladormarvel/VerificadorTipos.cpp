@@ -13,6 +13,16 @@
   accept(visitor) ser chamado.
 -----------------------------------------------------------------------------*/
 
+void imprimeRegistro(REGISTRO* registro){
+     cout << "---------------------------------------------------" << endl;
+     cout << "registro ativo: " << registro->ativo << endl;
+     cout << "escopo do registro: "<< registro->escopo << endl;
+     cout << "char :" << retornaCharToken(registro->indiceLexema) << endl;
+     cout << "offset do registro: " << registro->offset << endl;
+     cout << "tipo do registro: " << registro->tipo << endl;
+     cout << "inteiro do token: " << registro->token << endl;
+}
+
  
 // Implementa o construtor da classe de verificacao
 VerificadorTipos::VerificadorTipos() {
@@ -211,13 +221,14 @@ void VerificadorTipos::visit(IdListNode* idListNode){
 }
 
 void VerificadorTipos::visit(IdNode* idNode){
-//     fprintf(stdout, "---------------------------------------------------\n");
-//     fprintf(stdout, "variavel: %s\n", retornaCharToken(idNode->registro->indiceLexema));
-//     cout << "endereco da variavel e " << &(*idNode->registro) << endl;    
-//     fprintf(stdout, "tipo do no: %d\n", idNode->registro->tipo);
-//     fprintf(stdout, "numero da linha: %d\n", idNode->registro->linha);     
-     tipo = idNode->registro->tipo;
+
+     REGISTRO* registro = buscaTabSimbolos(retornaCharToken(idNode->id));
+     tipo = registro->tipo;
      linha = idNode->linha;
+     
+     // Impressao das informacoes do nó
+     imprimeRegistro(registro);
+     imprimeRegistro(idNode->registro);
 }
 
 void VerificadorTipos::visit(IfNode* ifNode){
@@ -458,4 +469,6 @@ void VerificadorTipos::visit(WriteNode* writeNode){
      // O nó Write não precisa enviar tipo a nível superior.
      tipo = EMPTY;
 }
+
+
 

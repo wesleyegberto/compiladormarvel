@@ -53,7 +53,7 @@ class VerificadorEscopo : public Visitor {
               //Metodos Gerenciais
               void iniciaEscopo();
               void terminaEscopo();
-              void insereEscopo(REGISTRO *entrada);
+              void insereEscopo(IdNode *idNode, int tipo);
               int retornaEscopo(int nivel);
               REGISTRO *buscaNoEscopo(int nivel, REGISTRO *valor);
                                        

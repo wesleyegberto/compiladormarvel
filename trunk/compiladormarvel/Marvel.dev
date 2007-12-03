@@ -1,7 +1,7 @@
 [Project]
 FileName=Marvel.dev
 Name=Marvel
-UnitCount=26
+UnitCount=35
 Type=1
 Ver=1
 ObjFiles=
@@ -306,7 +306,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit27]
-FileName=CodigoIntermediario.h
+FileName=Tradutor.cpp
 Folder=Codigo Intermediario
 Compile=1
 Link=1
@@ -316,7 +316,7 @@ BuildCmd=
 CompileCpp=1
 
 [Unit28]
-FileName=CodigoIntermediario.cpp
+FileName=Tradutor.h
 CompileCpp=1
 Folder=Codigo Intermediario
 Compile=1
@@ -326,9 +326,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit29]
-FileName=ArvoreIntermediaria.h
+FileName=VisitorArvoreIntermediaria.cpp
 CompileCpp=1
-Folder=Codigo Intermediario
+Folder=Codigo Intermediario/Visitor
 Compile=1
 Link=1
 Priority=1000
@@ -336,7 +336,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit30]
-FileName=ArvoreIntermediaria.cpp
+FileName=CodigoIntermediario.h
 CompileCpp=1
 Folder=Codigo Intermediario
 Compile=1
@@ -346,7 +346,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit31]
-FileName=ClassesArvoreIntermediaria.h
+FileName=ArvoreIntermediaria.h
 CompileCpp=1
 Folder=Codigo Intermediario
 Compile=1
@@ -366,9 +366,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit33]
-FileName=VisitorArvoreIntermediaria.cpp
+FileName=CodigoIntermediario.cpp
 CompileCpp=1
-Folder=Codigo Intermediario/Visitor
+Folder=Codigo Intermediario
 Compile=1
 Link=1
 Priority=1000
@@ -376,9 +376,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit35]
-FileName=Tradutor.h
+FileName=ArvoreIntermediaria.cpp
 CompileCpp=1
-Folder=
+Folder=Codigo Intermediario
 Compile=1
 Link=1
 Priority=1000
@@ -386,9 +386,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit34]
-FileName=Tradutor.cpp
+FileName=ClassesArvoreIntermediaria.h
 CompileCpp=1
-Folder=
+Folder=Codigo Intermediario
 Compile=1
 Link=1
 Priority=1000

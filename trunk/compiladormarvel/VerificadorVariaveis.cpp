@@ -14,8 +14,6 @@
  
 // Implementa o construtor da classe de verificacao
 VerificadorVariaveis::VerificadorVariaveis() {
-   tipoVariavel = 0;
-   tamanho = 0;
    offset = 4;
    parametros = 0;
 }
@@ -57,6 +55,11 @@ void VerificadorVariaveis::visit(IdListNode* idListNode){
 }
 
 void VerificadorVariaveis::visit(IdNode* idNode){
+
+            idNode->offset                     = offset;
+            offset                             += 4;
+    
+    
      // Conteudo do metodo
 }
 

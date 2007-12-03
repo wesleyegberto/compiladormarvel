@@ -34,7 +34,7 @@ ModifierNode::ModifierNode(int m, int n) : modifier(m), num(n) {}
 void ModifierNode::accept(Visitor* v) {v->visit(this);}
 
 
-IdListNode::IdListNode(IdNode* in, IdListNode* iln) : idNode(in), idListNode(iln) {}
+IdListNode::IdListNode(IdNode* in, IdListNode* iln) : idNode(in), idListNode(iln)  {}
 IdListNode::IdListNode(IdNode* in) : idNode(in), idListNode(NULL) {}
 void IdListNode::accept(Visitor* v) {v->visit(this);}
 IdListNode::~IdListNode() {
@@ -93,7 +93,7 @@ WriteNode::WriteNode(ExpressionListNode* eln) : expressionListNode(eln) {}
 void WriteNode::accept(Visitor* v) {v->visit(this);}
 WriteNode::~WriteNode() {delete expressionListNode;}
 
-ConstantNode::ConstantNode(NameDeclNode* ndn, ExpressionNode* en) : nameNode(ndn), value(en) {}
+ConstantNode::ConstantNode(NameDeclNode* ndn, ExpressionNode* en) : nameNode(ndn), value(en), tipo(CONSTANT) {}
 void ConstantNode::accept(Visitor* v) {v->visit(this);}
 ConstantNode::~ConstantNode() {
      delete nameNode; 
@@ -115,7 +115,7 @@ CallNode::~CallNode() {
     delete expressionListNode;
 }
 
-ArrayNode::ArrayNode(IdNode* in, ExpressionNode* en) : idNode(in), expressionNode(en) {}
+ArrayNode::ArrayNode(IdNode* in, ExpressionNode* en) : idNode(in), expressionNode(en), tipo(-1) {}
 void ArrayNode::accept(Visitor* v) {v->visit(this);}
 ArrayNode::~ArrayNode() {
     delete idNode;
@@ -123,13 +123,13 @@ ArrayNode::~ArrayNode() {
 }
 
 
-IdNode::IdNode(int i, struct Registro  *reg) : id(i), registro(reg), escopo(-1), ativo(0), paiEscopo(NULL), linha(retornaLinha()){}
+IdNode::IdNode(int i, struct Registro  *reg) : id(i), registro(reg), escopo(-1), ativo(1), paiEscopo(NULL), linha(retornaLinha()),tipo(-1), offset(-1){}
 void IdNode::accept(Visitor* v) {v->visit(this);}
 
-LiteralNode::LiteralNode(int l) : literal(l) {}
+LiteralNode::LiteralNode(int l) : literal(l){}
 void LiteralNode::accept(Visitor* v) {v->visit(this);}
 
-NumberNode::NumberNode(int n, struct Registro *reg) : number(n), registro(reg) {}
+NumberNode::NumberNode(int n, struct Registro *reg) : number(n), registro(reg), tipo(-1) {}
 void NumberNode::accept(Visitor* v) {v->visit(this);}
 
 RelOpNode::RelOpNode(int o, ExpressionNode* en1, ExpressionNode* en2) : op(o), expressionNode1(en1), expressionNode2(en2) {}

@@ -1,9 +1,9 @@
 # Project: Marvel
 # Makefile created by Dev-C++ 4.9.9.2
 
-CPP  = g++.exe -D__DEBUG__
-CC   = gcc.exe -D__DEBUG__
-WINDRES = windres.exe
+CPP  = C:\Dev-Cpp\bin\g++.exe -D__DEBUG__
+CC   = C:\Dev-Cpp\bin\gcc.exe -D__DEBUG__
+WINDRES = C:\Dev-Cpp\bin\windres.exe
 RES  = Marvel_private.res
 OBJ  = main.o Erro.o Anallex.o AnalSint.o ClassesArvoreAbstrata.o ImpressaoArvoreAbstrata.o Buffer.o TabSimbolos.o VerificadorVariaveis.o VerificadorTipos.o VerificadorEscopo.o $(RES)
 LINKOBJ  = main.o Erro.o Anallex.o AnalSint.o ClassesArvoreAbstrata.o ImpressaoArvoreAbstrata.o Buffer.o TabSimbolos.o VerificadorVariaveis.o VerificadorTipos.o VerificadorEscopo.o $(RES)

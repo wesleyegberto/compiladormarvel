@@ -18,6 +18,7 @@
 #define WHILE       267
 #define WRITE       268
 #define READ        269
+#define CONSTANT    327
 
 /* Símbolos da gramática */
 #define OPENBRA     270 /* [ */

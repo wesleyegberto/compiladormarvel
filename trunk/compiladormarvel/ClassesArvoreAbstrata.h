@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "Visitor.h"
+#include "Tokens.h"
 
 using namespace std;
 
@@ -98,12 +99,14 @@ class ModifierListNode{
 
 class IdNode : public ExpressionNode {
     public:
-        int     id;
-        IdNode  *paiEscopo;                 //Pai do aninhamento ao qual o id pertence
-        int     escopo;                    //indice do escopo que o id pertence
-        int     ativo;                     //Se o id esta ativo(1) ou não(0)
+        int              id;
+        ExpressionNode   *paiEscopo;                 //Pai do aninhamento ao qual o id pertence
+        int              ativo;                     //Se o id esta ativo(1) ou não(0)
         struct Registro  *registro;
-        int     linha;
+        int              linha;
+        int              tipo;
+        int              escopo; 
+        int              offset;
     public:
         IdNode(int i, struct Registro  *reg);
         void accept(Visitor* visitor) ;
@@ -116,6 +119,7 @@ class IdNode : public ExpressionNode {
 class LiteralNode : public ExpressionNode {
     public:
         int     literal;
+        int escopo; 
     public:
         LiteralNode(int l);
         void accept(Visitor* visitor) ;
@@ -130,6 +134,8 @@ class NumberNode : public ExpressionNode {
         int               number;
         struct Registro  *registro;
         int               linha;
+        int tipo;
+        int escopo; 
     public:
         NumberNode(int n, struct Registro *reg);
         void accept(Visitor* visitor) ;
@@ -230,6 +236,8 @@ class ArrayNode : public ExpressionNode {
     public:
         IdNode*          idNode;
         ExpressionNode*  expressionNode;
+        int tipo;
+        int escopo; 
     public:
         ArrayNode(IdNode* in, ExpressionNode* en);
         void accept(Visitor* visitor) ;
@@ -312,6 +320,7 @@ class ConstantNode : public StatementNode {
      public:
         NameDeclNode*  nameNode;
         ExpressionNode* value;
+        int             tipo;
     public:
         ConstantNode(NameDeclNode* ndn, ExpressionNode* en);
         void accept(Visitor* visitor);
@@ -326,6 +335,7 @@ class CallNode : public ExpressionNode {
     public:
         IdNode*              idNode;
         ExpressionListNode*  expressionListNode;
+        int escopo; 
     public:
         CallNode(IdNode* in, ExpressionListNode* eln);
         void accept(Visitor* visitor) ;
@@ -341,7 +351,8 @@ class RelOpNode : public ExpressionNode {
       public:
         int              op;
         ExpressionNode*  expressionNode1;
-        ExpressionNode*  expressionNode2;                
+        ExpressionNode*  expressionNode2;
+        int escopo;                 
       public:
         RelOpNode(int o, ExpressionNode* en1, ExpressionNode* en2);
         void accept(Visitor* visitor) ;

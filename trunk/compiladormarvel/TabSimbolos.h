@@ -13,11 +13,6 @@
 typedef struct Registro {
     int              indiceLexema;     // Indice do lexema no array de lexemas
     int              token;            // Token do registro
-    int              tipo;             // Tipo do Registro
-    int              escopo;           // Escopo do Registro
-    struct Registro  *param;            // Define a qual registro este esta ligado
-    int              offset;           // Offset do Registro
-    int              ativo;            //Verifica se a variave esta ativa ou não
     struct Registro  *prox;            // Proximo registro
 } REGISTRO;
 

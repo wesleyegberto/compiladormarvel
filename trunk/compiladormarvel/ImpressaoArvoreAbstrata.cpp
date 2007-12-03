@@ -144,7 +144,7 @@ void ImpressaoArvoreAbstrata::visit(IdListNode* idListNode){
 void ImpressaoArvoreAbstrata::visit(IdNode* idNode){
      nivel++;
      imprimeNivel();
-      fprintf(stdout, "ID.%s \n",retornaCharToken(idNode->id));
+      fprintf(stdout, "ID.%s escopo.%d \n",retornaCharToken(idNode->id),idNode->offset);
      nivel--;
 }
 

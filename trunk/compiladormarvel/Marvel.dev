@@ -1,7 +1,7 @@
 [Project]
 FileName=Marvel.dev
 Name=Marvel
-UnitCount=27
+UnitCount=26
 Type=1
 Ver=1
 ObjFiles=
@@ -20,8 +20,8 @@ ObjectOutput=
 OverrideOutput=0
 OverrideOutputName=Marvel.exe
 HostApplication=
-Folders="Analisador Lexico","Analisador Semantico","Analisador Semantico/Escopo","Analisador Semantico/Tipo","Analisador Semantico/Variavel","Analisador Sintatico","Arvore Sintaxe Abstrata",Buffer,Erro,"Tabela de Simbolos",Visitor
-CommandLine=codigo31.fra
+Folders="Analisador Lexico","Analisador Semantico","Analisador Semantico/Escopo","Analisador Semantico/Tipo","Analisador Semantico/Variavel","Analisador Sintatico","Arvore Sintaxe Abstrata",Buffer,"Codigo Intermediario","Codigo Intermediario/Visitor",Erro,"Tabela de Simbolos",Visitor
+CommandLine=codigo.fra
 UseCustomMakefile=0
 CustomMakefile=
 IncludeVersionInfo=0
@@ -306,10 +306,91 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit27]
-FileName=codigo31.fra
-Folder=Marvel
-Compile=0
-Link=0
+FileName=CodigoIntermediario.h
+Folder=Codigo Intermediario
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+CompileCpp=1
+
+[Unit28]
+FileName=CodigoIntermediario.cpp
+CompileCpp=1
+Folder=Codigo Intermediario
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit29]
+FileName=ArvoreIntermediaria.h
+CompileCpp=1
+Folder=Codigo Intermediario
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit30]
+FileName=ArvoreIntermediaria.cpp
+CompileCpp=1
+Folder=Codigo Intermediario
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit31]
+FileName=ClassesArvoreIntermediaria.h
+CompileCpp=1
+Folder=Codigo Intermediario
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit32]
+FileName=VisitorArvoreIntermediaria.h
+CompileCpp=1
+Folder=Codigo Intermediario/Visitor
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit33]
+FileName=VisitorArvoreIntermediaria.cpp
+CompileCpp=1
+Folder=Codigo Intermediario/Visitor
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit35]
+FileName=Tradutor.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit34]
+FileName=Tradutor.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=

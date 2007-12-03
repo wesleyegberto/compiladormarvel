@@ -56,6 +56,14 @@ int hash(char *key) {
 // Verifica se jแ existe o registro para o lexema na tabela de sํmbolos. Caso
 // exista, retorna o mesmo, senใo retorna 0.
 REGISTRO *buscaTabSimbolos(char *lexema) {
+//    int index = hash(lexema);
+//    if (tabelaSimbolos[index] == NULL) return NULL;
+//
+//    REGISTRO *registro;
+//    for(registro = tabelaSimbolos[index]; registro != NULL; registro = registro->prox)
+//        if (strcmp(&arrayLexemas.caracteres[registro->indiceLexema], lexema) == 0) return registro;
+//
+//    return NULL;
     int index = hash(lexema);
     if (tabelaSimbolos[index] == NULL) return NULL;
 
@@ -87,15 +95,49 @@ void insereArrayLexemas(char *lexema) {
 
 // Insere o token e respectivo lexema na tabela de sํmbolos
 int insereTabSimbolos(int token, char *lexema) {
+//   // Se existe o lexema na tabela de sํmbolos retorna 0 e armazena o indice do
+//    // ultimo lexema lido
+//    REGISTRO *registro;
+//    if((registro = buscaTabSimbolos(lexema)) != NULL) {
+//       indiceLexemaAtual = registro->indiceLexema;      // Armazena o indice do lexema lido
+//       if (registro->token != ID) return 0;
+//    } else {
+//       indiceLexemaAtual = arrayLexemas.proxIndice;
+//       insereArrayLexemas(lexema);
+//    }
+//
+//    int index = hash(lexema);                            // Retorna o hash do lexema
+//
+//    registro = (REGISTRO *) calloc(1, sizeof(REGISTRO)); // Aloca espa็o para o novo registro
+//    if (registro == NULL) {
+//        emiteErroLexico(ERRO_MEMORIA_INSUF, 0);
+//        exit(1);
+//    }
+//
+//    // Preenche o registro
+//    registro->indiceLexema = indiceLexemaAtual;
+//    registro->token = token;
+////    registro->tipo = -1;
+////    if (token == ID )registro->escopo = -1; else registro->escopo = 0; 
+////    registro->offset = 0;
+////    registro->ativo = 1;
+////    registro->param = NULL;
+//    registro->prox = tabelaSimbolos[index];              // Aponta o registro atual como pr๓ximo
+//    registroAtual = registro;
+//    tabelaSimbolos[index] = registro;                    // Coloca o registro no inicio da fila
+//    
+//    indiceLexemaAtual = registro->indiceLexema;          // Armazena indice do lexema atual
+//    
+//    return 1;
+//    
+    
     // Se existe o lexema na tabela de sํmbolos retorna 0 e armazena o indice do
     // ultimo lexema lido
     REGISTRO *registro;
     if((registro = buscaTabSimbolos(lexema)) != NULL) {
-       indiceLexemaAtual = registro->indiceLexema;      // Armazena o indice do lexema lido
-       if (registro->token != ID) return 0;
-    } else {
-       indiceLexemaAtual = arrayLexemas.proxIndice;
-       insereArrayLexemas(lexema);
+        indiceLexemaAtual = registro->indiceLexema;      // Armazena o indice do lexema lido
+        registroAtual = registro;
+        return 0;
     }
 
     int index = hash(lexema);                            // Retorna o hash do lexema
@@ -107,13 +149,9 @@ int insereTabSimbolos(int token, char *lexema) {
     }
 
     // Preenche o registro
-    registro->indiceLexema = indiceLexemaAtual;
+    registro->indiceLexema = arrayLexemas.proxIndice;
+    insereArrayLexemas(lexema);
     registro->token = token;
-    registro->tipo = -1;
-    if (token == ID )registro->escopo = -1; else registro->escopo = 0; 
-    registro->offset = 0;
-    registro->ativo = 1;
-    registro->param = NULL;
     registro->prox = tabelaSimbolos[index];              // Aponta o registro atual como pr๓ximo
     registroAtual = registro;
     tabelaSimbolos[index] = registro;                    // Coloca o registro no inicio da fila
@@ -134,7 +172,7 @@ void imprimeTabSimbolos(){
     printf("\nษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป\n");
     printf("บ                      TABELA DE SIMBOLOS                        บ\n");
     printf("ฬออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน\n");
-    printf("บ %-21s %-30s %-10sบ","Token","Atributo","Escopo");
+    printf("บ %-21s %-30s %-10sบ","Token","Atributo","Value");
     printf("\nฬออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออน\n");
 
     REGISTRO *registro;
@@ -142,8 +180,8 @@ void imprimeTabSimbolos(){
     for(i = 0; i < HASHPRIME; i++)
         if (tabelaSimbolos[i] != NULL)
             for(registro = tabelaSimbolos[i]; registro != NULL; registro = registro->prox)
-               if (registro->escopo!=-1)
-                  printf("บ %-21s %-30s %-10dบ\n", retornaToken(registro->token), &arrayLexemas.caracteres[registro->indiceLexema], registro->escopo);
+//               if (registro->escopo!=-1)
+                  printf("บ %-21s %-30s %-10dบ\n", retornaToken(registro->token), &arrayLexemas.caracteres[registro->indiceLexema], registro->token);
    printf("ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ\n");
 }
 

@@ -13,15 +13,15 @@
   accept(visitor) ser chamado.
 -----------------------------------------------------------------------------*/
 
-void imprimeRegistro(REGISTRO* registro){
-     cout << "---------------------------------------------------" << endl;
-     cout << "registro ativo: " << registro->ativo << endl;
-     cout << "escopo do registro: "<< registro->escopo << endl;
-     cout << "char :" << retornaCharToken(registro->indiceLexema) << endl;
-     cout << "offset do registro: " << registro->offset << endl;
-     cout << "tipo do registro: " << registro->tipo << endl;
-     cout << "inteiro do token: " << registro->token << endl;
-}
+//void imprimeRegistro(REGISTRO* registro){
+//     cout << "---------------------------------------------------" << endl;
+//     cout << "registro ativo: " << registro->ativo << endl;
+//     cout << "escopo do registro: "<< registro->escopo << endl;
+//     cout << "char :" << retornaCharToken(registro->indiceLexema) << endl;
+//     cout << "offset do registro: " << registro->offset << endl;
+//     cout << "tipo do registro: " << registro->tipo << endl;
+//     cout << "inteiro do token: " << registro->token << endl;
+//}
 
  
 // Implementa o construtor da classe de verificacao
@@ -36,13 +36,12 @@ VerificadorTipos::VerificadorTipos() {
 void VerificadorTipos::visit(AddOpNode* additionalOpNode){
      // Chama o visitante para recuperar o tipo do lado direito
      (additionalOpNode->expressionNode1->accept(this));
-     int tipoExpressionNode1 = INTEGER; //
+     int tipoExpressionNode1 = tipo;
 
      
      // Chama o visitante para recuperar o tipo do lado esquerdo
      (additionalOpNode->expressionNode2->accept(this));
-     int tipoExpressionNode2 = INTEGER; //
-
+     int tipoExpressionNode2 = tipo;
      
      // Verifica se os tipos sao iguais
      if (tipoExpressionNode1 != tipoExpressionNode2) {
@@ -86,13 +85,15 @@ void VerificadorTipos::visit(AssignNode* assignNode){
      // Chama o visitante para recuperar o tipo do id que recebera a atribuição
      (assignNode->idNode)->accept(this);
      int tipoId = tipo;
-     
+
      // Chama o visitante para recuperar o tipo da primeira expressão
      (assignNode->expressionNode1->accept(this));
      int tipoExpressionNode1 = tipo;
      
+
+     
      // Chama o visitante para recuperar o tipo da segunda expressão
-     (assignNode->expressionNode2->accept(this));
+     if (assignNode->expressionNode2)(assignNode->expressionNode2->accept(this));
      int tipoExpressionNode2 = tipo;
      
      if ((tipoExpressionNode1 != tipoId) || (tipoExpressionNode2 != tipoId)){
@@ -223,12 +224,12 @@ void VerificadorTipos::visit(IdListNode* idListNode){
 void VerificadorTipos::visit(IdNode* idNode){
 
      REGISTRO* registro = buscaTabSimbolos(retornaCharToken(idNode->id));
-     tipo = registro->tipo;
+     tipo = idNode->tipo;
      linha = idNode->linha;
      
      // Impressao das informacoes do nó
-     imprimeRegistro(registro);
-     imprimeRegistro(idNode->registro);
+    // imprimeRegistro(registro);
+    // imprimeRegistro(idNode->registro);
 }
 
 void VerificadorTipos::visit(IfNode* ifNode){
@@ -341,7 +342,7 @@ void VerificadorTipos::visit(NotNode* notNode){
 }
 
 void VerificadorTipos::visit(NumberNode* numberNode){
-     tipo = numberNode->registro->tipo;
+     tipo = numberNode->tipo;
      linha = numberNode->linha;
 }
 

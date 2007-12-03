@@ -42,16 +42,15 @@ int main(int argc, char *argv[])
    printf("\n\n\t\t     -----------------------\n\n");
 
    inicializaAnalisadorLexico(argv[1]);
-   
-   ProgramNode *ASA = analiseSintatica();
+   imprimeTabSimbolos();
 
+   ProgramNode *ASA = analiseSintatica();
    imprimirASAbstrata(ASA);
        
        // Inicia a verificação de escopo e declaração de variáveis
        VerificadorEscopo* verifEscopo = new VerificadorEscopo();
        ASA->accept(verifEscopo);
-
-   imprimeTabSimbolos();
+       imprimirASAbstrata(ASA);
           
        // Inicia a verificação de tipos
        VerificadorTipos* verifTipos = new VerificadorTipos();

@@ -3,25 +3,16 @@
     FLOAT b;
     INTEGER constante1;
     
-    FRAGMENT INTEGER calcula;
+    FRAGMENT FLOAT calcula;
         PARAM FLOAT k;
         PARAM FLOAT h;
         FLOAT T;
         FRAGMENT constante2; 
              "TESTE" 
-        ENDFRAGMENT;
-        FRAGMENT FLOAT ki;
-             FLOAT h; 
-             a = 2; 
-             b = 2 
-        ENDFRAGMENT;
-        T = h;
-        WRITE (k," ",T," foram calculados")
+        ENDFRAGMENT
     ENDFRAGMENT;
     
-    FLOAT x;
-    FLOAT x;
+    calcula(a,b);
     
-    ABAJUR 22;
-    
-    x = a
+            
+    b = a + b

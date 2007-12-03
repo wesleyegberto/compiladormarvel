@@ -12,8 +12,11 @@ int nivelEscopo;
 int estaDeclarando;
 int temParametro;
 
+//Offset
+int offset = 4;
+
 //Define o "pai" do escopo Atual
-REGISTRO *paiAtual;
+IdNode *paiAtual;
  
 // Retorna a linha atual
 int retornaLinha();
@@ -80,7 +83,7 @@ void VerificadorEscopo::visit(FragCallNode* fragCallNode){
     (fragCallNode->idNode)->accept(this);
     (fragCallNode->expressionList)->accept(this);
 
-}
+}   
 
 void VerificadorEscopo::visit(FragmentNode* fragmentNode){
      
@@ -116,13 +119,15 @@ void VerificadorEscopo::visit(IdListNode* idListNode){
 }
 
 void VerificadorEscopo::visit(IdNode* idNode){   
-     REGISTRO *chave = idNode->registro;
-     REGISTRO *resultado = NULL;
+     IdNode *resultado = NULL;
      for (int nivel = nivelEscopo; nivel >=0; nivel--){
-             resultado = buscaNoEscopo(nivel,chave);
+             resultado = buscaNoEscopo(nivel,idNode);
           if( resultado != NULL){
+             *idNode = *resultado;
              // chave->escopo = resultado->escopo;
-             chave->param = resultado->param;
+             //idNode->paiEscopo = resultado->paiEscopo;
+//             idNode->escopo = resultado->escopo;
+//             idNode->tipo = resultado->tipo;
              return;
           }
      }
@@ -164,24 +169,28 @@ void VerificadorEscopo::visit(NameDeclNode* nameDeclNode){
      
      //Verifica se é a declaração de um Fragmento
      if (estaDeclarando){ 
-             nameDeclNode->idListNode->idNode->registro->tipo = FRAGMENT;                     
+             nameDeclNode->idListNode->idNode->tipo = FRAGMENT; 
              insereEscopo(nameDeclNode->idListNode->idNode, tipo);
-             paiAtual = nameDeclNode->idListNode->idNode->registro;
+             nameDeclNode->idListNode->idNode->offset = offset;
+             offset = 0;
+             paiAtual = nameDeclNode->idListNode->idNode;
              estaDeclarando = 0;
              temParametro = 1;     
              iniciaEscopo();
      //Verifica se a é declaração do parametro de um fragmento
      }else if ((temParametro) && (tipo == PARAM)){
              tipo = nameDeclNode->modifierListNode->modifierListNode->modifierNode->modifier;
-             nameDeclNode->idListNode->idNode->registro->tipo = tipo;                     
-             nameDeclNode->idListNode->idNode->registro->param = paiAtual;
+             nameDeclNode->idListNode->idNode->tipo = tipo;                     
+             nameDeclNode->idListNode->idNode->paiEscopo = paiAtual;
              insereEscopo(nameDeclNode->idListNode->idNode, tipo);
      //Escopo interno                  
      }else{
            temParametro = 0;
            if ((nameDeclNode->idListNode) != NULL){
-                 nameDeclNode->idListNode->idNode->registro->tipo = tipo;   
-                 nameDeclNode->idListNode->idNode->registro->param = paiAtual;
+                 nameDeclNode->idListNode->idNode->tipo = tipo;  
+                 nameDeclNode->idListNode->idNode->offset = offset;
+                 offset += 4;
+                 nameDeclNode->idListNode->idNode->paiEscopo = paiAtual;
                  insereEscopo(nameDeclNode->idListNode->idNode, tipo);
            }
      }    
@@ -234,8 +243,8 @@ void VerificadorEscopo::iniciaEscopo(){
 
 
 void VerificadorEscopo::terminaEscopo(){
-    multimap<int, REGISTRO*>::iterator itr = niveis.find(nivelEscopo);
-    pair<int, REGISTRO*> p;
+    multimap<int, IdNode*>::iterator itr = niveis.find(nivelEscopo);
+    pair<int, IdNode*> p;
     int final =  niveis.count(nivelEscopo);
     for (int i = 0; i < final; i++){
         p = *itr;
@@ -246,23 +255,21 @@ void VerificadorEscopo::terminaEscopo(){
      //Varre a tabela de simbolos e coloca o escopo inativo
 }
 
-REGISTRO *VerificadorEscopo::buscaNoEscopo(int nivel, REGISTRO *valor){
-    multimap<int, REGISTRO*>::iterator itr = niveis.find(nivel);
-    pair<int, REGISTRO*> p;
-    int final =  niveis.count(nivel);
-    for (int i = 0; i < final; i++){
-        p = *itr;
-        if ((p.second->indiceLexema == valor->indiceLexema) && (p.second->ativo == 1)) return p.second;
-       itr++;
-    } 
+IdNode *VerificadorEscopo::buscaNoEscopo(int nivel, IdNode *valor){
+    pair< multimap<int, IdNode*>::iterator, multimap<int, IdNode*>::iterator> range = niveis.equal_range(nivel); 
+    multimap<int, IdNode*>::iterator itr;
+    
+    for (itr = range.first; itr != range.second; itr++)          
+     if (( itr->second->registro->indiceLexema == valor->registro->indiceLexema) && (itr->second->ativo == 1)) return itr->second;
+    
     return NULL;
 }
 
-void VerificadorEscopo::insereEscopo(IdNode *idNode, int tipo){
-     if (buscaNoEscopo(nivelEscopo,idNode->registro)==0){
-            niveis.insert(pair<const int, REGISTRO*>(nivelEscopo,idNode->registro));
-            idNode->registro->escopo = nivelEscopo;
-            idNode->registro->tipo   = tipo;
+void VerificadorEscopo::insereEscopo(IdNode *idNode, int tipo){     
+     if (buscaNoEscopo(nivelEscopo,idNode)==NULL){
+            idNode->escopo = nivelEscopo;
+            idNode->tipo   = tipo;
+            niveis.insert(pair<const int, IdNode*>(nivelEscopo,idNode));
      }else{
            //EMITE ERRO!!!!
            emiteErroSemantico(ERRO_VARIAVEL_JA_DECLARADA, 

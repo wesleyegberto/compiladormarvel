@@ -12,8 +12,6 @@
 class VerificadorVariaveis : public Visitor {
 
       public:
-             int    tipoVariavel;           // define o tipo da variável
-             int    tamanho;                // define o tamanha em bytes
              int    parametros;             // define a quantidade de parametros
              int    offset;                 // offset
 //             void*  ponteiro_estrutura_tipo;

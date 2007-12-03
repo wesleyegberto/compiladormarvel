@@ -36,5 +36,7 @@ class Visitor{
              virtual void visit(IdListNode* idListNode) = 0;
              virtual void visit(NumberNode* numberNode) = 0;
              virtual void visit(LiteralNode* literalNode)= 0;
+             
 };
+
 #endif

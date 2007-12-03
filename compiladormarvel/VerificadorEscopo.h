@@ -16,7 +16,7 @@
 // Define os atributos e métodos visitantes.
 class VerificadorEscopo : public Visitor {
           public:
-             multimap<int, REGISTRO* > niveis;    
+             multimap<int, IdNode*> niveis;    
           public:
              // Declaração do construtor
              VerificadorEscopo();
@@ -55,7 +55,7 @@ class VerificadorEscopo : public Visitor {
               void terminaEscopo();
               void insereEscopo(IdNode *idNode, int tipo);
               int retornaEscopo(int nivel);
-              REGISTRO *buscaNoEscopo(int nivel, REGISTRO *valor);
+              IdNode *buscaNoEscopo(int nivel, IdNode *valor);
                                        
 };
 #endif

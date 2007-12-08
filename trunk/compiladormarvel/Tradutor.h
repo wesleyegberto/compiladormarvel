@@ -14,8 +14,8 @@ class Tradutor : public Visitor {
       	
        private:
 
-    	Exp * expressao;
-		Stm * stmTemp;
+    	Exp * expressaoTemp;
+		Stm * sentencaTemp;
 		int bytes_para_passagem_de_parametros;
         int programaPrincipal;
         int numero_temporario;

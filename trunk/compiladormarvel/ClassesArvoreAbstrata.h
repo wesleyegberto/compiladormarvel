@@ -107,6 +107,8 @@ class IdNode : public ExpressionNode {
         int              tipo;
         int              escopo; 
         int              offset;
+        IdListNode       *parametros;
+        int              tamanho;
     public:
         IdNode(int i, struct Registro  *reg);
         void accept(Visitor* visitor) ;

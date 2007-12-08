@@ -1,6 +1,7 @@
 #ifndef _classe_Arvore_Intermediaria_h
 #define _classe_Arvore_Intermediaria_h
 
+
 class Exp;
 class Stm;
 class ExpList;

@@ -1,5 +1,6 @@
 #ifndef _Visitor_arvore_Intermediaria_h
 #define _Visitor_arvore_Intermediaria_h
+
 #include "ClassesArvoreIntermediaria.h"
 
 

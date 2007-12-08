@@ -11,6 +11,9 @@
 #include "AnalSint.h"
 #include "VerificadorEscopo.h"
 #include "VerificadorTipos.h"
+#include "Tradutor.h"
+#include "VisitorArvoreIntermediaria.h"
+
 
 using namespace std;
 
@@ -56,10 +59,10 @@ int main(int argc, char *argv[])
        VerificadorTipos* verifTipos = new VerificadorTipos();
        ASA->accept(verifTipos);
        
+       Tradutor* tradutor = new Tradutor();
+       ASA->accept(tradutor);
        
-
-
- 
+       
    finalizaAnalisadorLexico();
 
      system("PAUSE");

@@ -3,44 +3,34 @@
 #define _Tradutor_h
 
 #include "Visitor.h"
+#include "TabSimbolos.h"
 #include "ArvoreIntermediaria.h"
 #include "CodigoIntermediario.h"
 
-	typedef struct rPilhaFragmentos {
-			StmList * corpo; //ponteiro para o parametro
-			ListaAcesso * dados;
-			struct rPilhaFragmentos *proximo;
-		}
-		TPilhaFragmentos;
-		
+
+
 // Define os atributos e métodos visitantes.
 class Tradutor : public Visitor {
-      	public:
-		ListaDeFragmentos * listaFragmentos;
-		ListaAcesso * dados; //dados do procedimento analisado
-		StmList * corpo; //corpo do procedimento analisado 
-		Exp * expTemp;
-		Stm * stmTemp;
-		int tamanhoPalavra;
-		
-		TPilhaFragmentos pilhaFrag;
-		TPilhaFragmentos * topoFrag;
-		
-		
-		/*
-		int adicionaAssing: no caso de staments que chamam outros statements ( if ... while) o assign estava 
-		sendo adicionado repetidadaemnte ao corpo do fragmento (BENZE). Agora so sera adicionado se o valor
-		desse atributo for 1 (VERDADEIRO)
-		*/
-		int adicionaStm; 
-		int adicionaBloco; //similar a adicionaStm
-		
-		int numBloco;
+      	
+       private:
 
+    	Exp * expressao;
+		Stm * stmTemp;
+		int bytes_para_passagem_de_parametros;
+        int programaPrincipal;
+        int numero_temporario;
+        int numero_rotulo;
+        int numero_literal;
+        StmList * lista_sentenca;
+		ListaDeFragmentos *listaFragmentos;
+		ListaAcesso *listaAcesso;
+
+		
       public:
-             // Declaração do construtor
+            // Declaração do construtor
              Tradutor();
-             
+                          
+            
              // Métodos visitantes
               void visit(ProgramNode* programNode);
               void visit(StatementListNode* stmtNode);
@@ -69,21 +59,12 @@ class Tradutor : public Visitor {
               void visit(IdListNode* idListNode);
               void visit(NumberNode* numberNode);
               void visit(LiteralNode* literalNode);
+
+              ListaDeFragmentos* getListaFragmentos();
+              void addFragmento(Fragmento * frag);
+              void addStm(Stm * stm);
+  
              
-              // Método responsável pela impressão do nível da árvore
-    		   ListaDeFragmentos * getListaFragmentos();
-	          void empilhaFrag(StmList *corpo, ListaAcesso *dados);
-		      void desempilhaFrag();
-		      TPilhaFragmentos * getTopoFrag();
-		      void adicionaFragmento(Fragmento * frag);
-		      void adicionaSentenca(Stm * sentenca);
-		      void salvaFrag();
-		      void restauraFrag();
-		      Stm * seqBloco(FragmentNode *o); 
-		      Stm * seqMoves(WriteNode *o); 		
-		      Stm * seqMoves(ReadNode *o); 
-		      Exp * acessoNaoLocal(int n);	
-		      Exp * seqMem(int n);
                                        
 };
 #endif

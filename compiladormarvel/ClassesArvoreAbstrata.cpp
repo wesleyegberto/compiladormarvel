@@ -123,7 +123,7 @@ ArrayNode::~ArrayNode() {
 }
 
 
-IdNode::IdNode(int i, struct Registro  *reg) : id(i), registro(reg), escopo(-1), ativo(1), paiEscopo(NULL), linha(retornaLinha()),tipo(-1), offset(-1){}
+IdNode::IdNode(int i, struct Registro  *reg) : id(i), registro(reg), escopo(-1), ativo(1), paiEscopo(NULL), linha(retornaLinha()),tipo(-1), offset(-1), parametros(NULL), tamanho(0){}
 void IdNode::accept(Visitor* v) {v->visit(this);}
 
 LiteralNode::LiteralNode(int l) : literal(l){}

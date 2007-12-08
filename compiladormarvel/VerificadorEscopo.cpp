@@ -166,12 +166,13 @@ void VerificadorEscopo::visit(NameDeclNode* nameDeclNode){
         tipo = nameDeclNode->modifierListNode->modifierNode->modifier;                           
      }
      
-     
+
      //Verifica se é a declaração de um Fragmento
      if (estaDeclarando){ 
              nameDeclNode->idListNode->idNode->tipo = FRAGMENT; 
              insereEscopo(nameDeclNode->idListNode->idNode, tipo);
              nameDeclNode->idListNode->idNode->offset = offset;
+             nameDeclNode->idListNode->idNode->tamanho = 8;
              offset = 0;
              paiAtual = nameDeclNode->idListNode->idNode;
              estaDeclarando = 0;
@@ -180,8 +181,15 @@ void VerificadorEscopo::visit(NameDeclNode* nameDeclNode){
      //Verifica se a é declaração do parametro de um fragmento
      }else if ((temParametro) && (tipo == PARAM)){
              tipo = nameDeclNode->modifierListNode->modifierListNode->modifierNode->modifier;
-             nameDeclNode->idListNode->idNode->tipo = tipo;                     
+             nameDeclNode->idListNode->idNode->tipo = tipo;  
+             nameDeclNode->idListNode->idNode->tamanho = 8;                   
              nameDeclNode->idListNode->idNode->paiEscopo = paiAtual;
+             if (paiAtual->parametros == NULL)
+                 paiAtual->parametros = new IdListNode(nameDeclNode->idListNode->idNode,NULL);
+              else{
+                 while ( paiAtual->parametros->idListNode != NULL ) paiAtual->parametros->idListNode =   paiAtual->parametros->idListNode->idListNode;
+                 paiAtual->parametros->idListNode = new IdListNode(nameDeclNode->idListNode->idNode,NULL);
+              } 
              insereEscopo(nameDeclNode->idListNode->idNode, tipo);
      //Escopo interno                  
      }else{
@@ -189,6 +197,7 @@ void VerificadorEscopo::visit(NameDeclNode* nameDeclNode){
            if ((nameDeclNode->idListNode) != NULL){
                  nameDeclNode->idListNode->idNode->tipo = tipo;  
                  nameDeclNode->idListNode->idNode->offset = offset;
+                 nameDeclNode->idListNode->idNode->tamanho = 8;
                  offset += 4;
                  nameDeclNode->idListNode->idNode->paiEscopo = paiAtual;
                  insereEscopo(nameDeclNode->idListNode->idNode, tipo);

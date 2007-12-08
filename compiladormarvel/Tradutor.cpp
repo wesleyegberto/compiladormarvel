@@ -4,677 +4,645 @@
 #include "Tradutor.h"
 
 
+
 Tradutor::Tradutor(){
-		this->listaFragmentos = NULL;
-		this->dados = NULL;
-		this->corpo = NULL;
-		this->expTemp = NULL;
-		this->stmTemp = NULL;
-		this->tamanhoPalavra = 4;
-		//inicializacao da pilha de fragmentos
-		this->topoFrag = &this->pilhaFrag; 
-		this->topoFrag->proximo = NULL;
-		this->adicionaStm = 1;
-		this->adicionaBloco = 1;
-		this->numBloco = 1;
+     expressao                         = NULL;
+     stmTemp                           = NULL;
+     bytes_para_passagem_de_parametros = 0;
+     programaPrincipal                 = 0;
+     numero_temporario                 = 0;
+     numero_rotulo                     = 0;
+     numero_literal                    = 0;
+     lista_sentenca                    = new StmList(NULL,NULL);  
+     listaAcesso                       = NULL; 
+     listaFragmentos                   = NULL;
+
 };
 
-ListaDeFragmentos * Tradutor::getListaFragmentos(){
-	return this->listaFragmentos;
+
+
+//IdNode
+void Tradutor::visit(IdNode *idNode){
+	
+	 Temp *regFP = new Temp("FP");
+	 int offset, nivel;
+     offset = idNode->offset;
+     nivel  = idNode->escopo;
+     
+     if (nivel == 0){
+        expressao = new MEM(new TEMP(regFP));
+     }
+     else{
+        expressao = new TEMP(regFP);  
+     }
+
+     expressao = new MEM(
+                     new BINOP(PLUS,expressao,new CONST(offset)));
+    
 };
 
-void Tradutor::empilhaFrag(StmList *corpo, ListaAcesso *dados){
-	TPilhaFragmentos *novo;
-	novo = (TPilhaFragmentos *) malloc(sizeof(TPilhaFragmentos));
-	novo->corpo = corpo;
-	novo->dados = dados;
-	novo->proximo = topoFrag->proximo;
-	topoFrag->proximo = novo;	
+//Add Op
+void Tradutor::visit(AddOpNode* additionalOpNode){
+      (additionalOpNode->expressionNode1)->accept(this);
+       Exp *expressaoEsquerda = expressao;
+     
+      (additionalOpNode->expressionNode2)->accept(this);
+       Exp *expressaoDireita = expressao; 
+     
+      expressao = new BINOP(additionalOpNode->op, expressaoEsquerda, expressaoDireita);
+     
 };
 
-void Tradutor::desempilhaFrag(){
-	TPilhaFragmentos *elemento;
-	elemento = topoFrag->proximo;
-	topoFrag->proximo = elemento->proximo;
-	free(elemento);
+//Mult Op
+void Tradutor::visit(MultOpNode* multOpNode){
+
+    (multOpNode->expressionNode1)->accept(this);
+     Exp* expressaoEsquerda = expressao;
+    (multOpNode->expressionNode2)->accept(this);
+     Exp* expressaoDireita = expressao;
+     
+     expressao = new BINOP(multOpNode->op, expressaoEsquerda, expressaoDireita);
+
 };
 
-TPilhaFragmentos * Tradutor::getTopoFrag(){
-	TPilhaFragmentos *elemento;
-	elemento = topoFrag->proximo;
-	return elemento;	
+//Write
+void Tradutor::visit(WriteNode* writeNode){
+  
+     ExpList*listaParametros          = NULL;
+     ExpList*ordListaParametros = NULL;
+     
+     if (writeNode->expressionListNode){
+        ExpressionListNode *listaExpressao = writeNode->expressionListNode;
+        while (listaExpressao != NULL){
+              (listaExpressao->expressionNode)->accept(this);
+              listaParametros = new ExpList(expressao,listaParametros);
+              listaExpressao  = listaExpressao->expressionListNode;
+        }
+       
+        while (listaParametros != NULL){
+              ordListaParametros = new ExpList(listaParametros->prim, ordListaParametros);
+              listaParametros          = listaParametros->prox;
+        }
+     }
+     listaParametros = NULL;
+     
+     //Chamada da funcao
+     Temp* SL  = new Temp("SL");
+     Temp* FP  = new Temp("FP");
+     Label* rotuloProcedimento = new Label("PROCEDIMENTO$WRITE");
+     
+     if (!programaPrincipal){
+        expressao = new MEM(new TEMP(FP));
+     }
+     else{
+        expressao = new TEMP(FP);  
+     }
+     
+     stmTemp = new EXP(
+                    new ESEQ(
+                        new MOVE(new TEMP(SL),expressao),
+                        new CALL(
+                            new NAME(rotuloProcedimento),
+                            new ExpList(new TEMP(SL), ordListaParametros))));
+     addStm(stmTemp);
+
 };
 
-void Tradutor::adicionaFragmento(Fragmento* frag){
-	if (this->listaFragmentos == NULL){
-		this->listaFragmentos = new ListaDeFragmentos(frag,NULL);
+//Array
+void Tradutor::visit(ArrayNode* arrayNode){
+    
+    
+     if (arrayNode->idNode) (arrayNode->idNode)->accept(this);
+     Exp * expressaoEsquerda;
+     expressaoEsquerda =  expressao;
+     if (arrayNode->expressionNode) (arrayNode->expressionNode)->accept(this);
+     Exp * expressaoDireita;
+     expressaoDireita =  expressao;
+    
+
+     expressao = new MEM(
+                     new BINOP(PLUS,expressaoEsquerda,
+                         new BINOP(MULT,new CONST(4), 
+                             new BINOP(MINUS,expressaoDireita, 
+                                 new CONST(arrayNode->idNode->offset)))));
+
+
+};
+
+//Assign
+void Tradutor::visit(AssignNode *o){
+	if (o->idNode){
+		o->idNode->accept(this);
+        Exp * esquerda = expressao;
+		
+        o->expressionNode1->accept(this);
+		Exp * direita = expressao;
+		
+        Stm * stmAssign = new MOVE(new MEM(esquerda),direita);
+		 
 	}else{
-		ListaDeFragmentos *atual = this->listaFragmentos;
-		while (atual->prox != NULL){
-			atual = atual->prox;	
-		}
-		ListaDeFragmentos * fl = new ListaDeFragmentos(frag,NULL);
-		atual->prox = fl;	
-	}    	
+		o->arrayNode->accept(this);
+        Exp * esquerda = expressao;
+		
+        o->expressionNode1->accept(this);
+		Exp * direita = expressao;
+		
+        stmTemp = new MOVE(new MEM(esquerda),direita);
+		
+	}
+ 
+ addStm(stmTemp);
+};
+
+//While
+void Tradutor::visit(WhileNode* whileNode){
+     (whileNode->expressionNode)->accept(this);
+     Exp* expressaoCondicional = expressao;
+     (whileNode->statementNode)->accept(this);
+     Stm* sentencaEnquanto = stmTemp;
+     
+     char rotulo[64];
+     printf(rotulo,"LABEL%d$TESTE",++numero_rotulo);
+     Label* rotuloTeste  = new Label(rotulo);
+     printf(rotulo,"LABEL%d$INICIO",numero_rotulo);
+     Label* rotuloInicio = new Label(rotulo);
+     printf(rotulo,"LABEL%d$FIM",numero_rotulo);
+     Label* rotuloFim    = new Label(rotulo);
+     
+     stmTemp = new SEQ(
+                    new LABEL(rotuloTeste),
+                    new SEQ(new CJUMP(NE, expressaoCondicional, new CONST(0), rotuloInicio, rotuloFim),
+                        new SEQ(new LABEL(rotuloInicio),
+                            new SEQ( sentencaEnquanto,
+                                new SEQ( 	new JUMP(new NAME(rotuloTeste)),
+                                    new LABEL(rotuloFim))))));
+                                    
+
+     addStm(stmTemp);
 }
 
-void Tradutor::adicionaSentenca(Stm * sentenca){
-	if (this->corpo == NULL){
-		this->corpo = new StmList(sentenca,NULL);
+//Rel Op
+void Tradutor::visit(RelOpNode* relOpNode){
+ 
+     (relOpNode->expressionNode1)->accept(this);
+     Exp* esquerda = expressao;
+     (relOpNode->expressionNode2)->accept(this);
+     Exp* direita = expressao;
+     
+     char rotulo[64];
+     printf(rotulo,"TEMP$%d",++numero_temporario);
+     Temp* temporario           = new Temp(rotulo); 
+     printf(rotulo,"LABEL%d$VERDADEIRO",++numero_rotulo);
+     Label*     rotuloVerdadeiro = new Label(rotulo);
+     printf(rotulo,"LABEL%d$FALSO",numero_rotulo);
+     Label*     rotuloFalso      = new Label(rotulo);
+     
+     expressao = new ESEQ(
+                     new SEQ( new MOVE( new TEMP(temporario),new CONST(1)), 
+                         new SEQ( new CJUMP(relOpNode->op, esquerda, direita, rotuloVerdadeiro, rotuloFalso),
+                             new SEQ( new LABEL(rotuloFalso),
+                                 new SEQ( new MOVE( new TEMP(temporario), new CONST(0)),
+                                     new LABEL(rotuloVerdadeiro))))), 
+                                       new TEMP(temporario));
+   
+}
+
+//Bool Op
+void Tradutor::visit(BoolOpNode* boolOpNode){
+ 
+     (boolOpNode->expressionNode1)->accept(this);
+     Exp* esquerda = expressao;
+     (boolOpNode->expressionNode2)->accept(this);
+     Exp* direita = expressao;
+     
+     char rotulo[64];
+     printf(rotulo,"TEMP$%d",++numero_temporario);
+     Temp* temporario           = new Temp(rotulo); 
+     printf(rotulo,"LABEL%d$VERDADEIRO",++numero_rotulo);
+     Label*     rotuloVerdadeiro = new Label(rotulo);
+     printf(rotulo,"LABEL%d$FALSO",numero_rotulo);
+     Label*     rotuloFalso      = new Label(rotulo);
+ 
+     expressao = new ESEQ(
+                     new SEQ( new MOVE(new TEMP(temporario), esquerda),
+                         new SEQ( new CJUMP(boolOpNode->op, direita, new CONST(0), rotuloVerdadeiro, rotuloFalso),
+                             new SEQ( new LABEL(rotuloVerdadeiro),
+                                 new SEQ( new MOVE( new TEMP(temporario), new CONST(1)), new LABEL(rotuloFalso))))),
+                                     new TEMP(temporario));
+
+}
+
+//Read
+void Tradutor::visit(ReadNode* readNode){
+    if (readNode->idNode) (readNode->idNode)->accept(this);
+     if (readNode->arrayNode) (readNode->arrayNode)->accept(this);
+
+     ExpList* listaParametros    = NULL;
+     ExpList* ordListaParametros = NULL;
+     
+     if (readNode->expressionListNode != NULL){
+        ExpressionListNode* listaExpressao = readNode->expressionListNode;
+        while (listaExpressao != NULL){
+              (listaExpressao->expressionNode)-> accept(this);
+              listaParametros = new ExpList(expressao,listaParametros);
+              listaExpressao  = listaExpressao->expressionListNode;
+        }
+
+        while (listaParametros != NULL){
+              ordListaParametros = new ExpList(listaParametros->prim, ordListaParametros);
+              listaParametros          = listaParametros->prox;
+        }
+     }
+     listaParametros = NULL;
+     
+     //Chamada da funcao
+     Temp* SL  = new Temp("SL");
+     Temp* FP  = new Temp("FP");
+     Label* rotuloProcedimento = new Label("PROCEDIMENTO$READ");
+     
+     if (!programaPrincipal){
+        expressao = new MEM(new TEMP(FP));
+     }
+     else{
+        expressao = new TEMP(FP);  
+     }
+     
+     stmTemp = new EXP(
+                    new ESEQ(new MOVE( new TEMP(SL),expressao),
+                        new CALL( new NAME(rotuloProcedimento),
+                            new ExpList(new TEMP(SL), ordListaParametros))));
+     
+     addStm(stmTemp);
+};
+
+//Stm List
+void Tradutor::visit(StatementListNode* stmtListNode){
+     if ((stmtListNode->statementNode) != NULL) (stmtListNode->statementNode)->accept(this);
+     if ((stmtListNode->statementListNode) != NULL) (stmtListNode->statementListNode)->accept(this);
+};
+
+//Literal
+void Tradutor::visit(LiteralNode* literalNode){
+  
+     char rotulo[64];
+     printf(rotulo,"CONSTANTE_LITERAL$%d",++numero_literal);
+     Label* rotuloLiteral = new Label(rotulo);
+     Fragmento* consLiteral = new constanteLiteral(literalNode->literal);
+     
+     addFragmento(consLiteral);
+     
+     expressao = new NAME(rotuloLiteral);
+};
+
+//Number
+void Tradutor::visit(NumberNode* numberNode){
+     
+     if (numberNode->tipo == INTEGER){
+        expressao = new CONST(numberNode->number);
+     }
+     else{
+        expressao = new CONSTF(numberNode->number);  
+     }
+};
+
+//Not
+void Tradutor::visit(NotNode* notNode){
+  
+     (notNode->expressionNode)->accept(this);
+     Exp* esquerda = expressao;
+
+     expressao = new BINOP(MINUS, new CONST(0), esquerda);
+};
+
+//If
+void Tradutor::visit(IfNode* ifNode){
+    
+     (ifNode->expressionNode)->accept(this);
+     Exp* condicional = expressao;
+     (ifNode->statementNode1)->accept(this);
+     Stm* entao = stmTemp;
+     
+     if (ifNode->statementNode2!= NULL){
+        (ifNode->statementNode2)->accept(this);
+        Stm* senao = stmTemp;
+
+        char rotulo[64];
+        sprintf(rotulo,"LABEL%d$ENTAO",++numero_rotulo);
+        Label* rotuloEntao = new Label(rotulo);
+        sprintf(rotulo,"LABEL%d$SENAO",numero_rotulo);
+        Label* rotuloSenao = new Label(rotulo);
+        sprintf(rotulo,"LABEL%d$FIM",numero_rotulo);
+        Label* rotuloFim   = new Label(rotulo);
+     
+        stmTemp = new SEQ(
+                       new CJUMP(NE, condicional, new CONST(0), rotuloEntao, rotuloSenao),
+                       new SEQ(new LABEL(rotuloEntao),
+                           new SEQ(entao,
+                               new SEQ(new JUMP(new NAME(rotuloFim)),
+                                   new SEQ(new LABEL(rotuloSenao),
+                                       new SEQ(senao,
+                                           new LABEL(rotuloFim)))))));
+     }
+     else{
+          
+             char rotulo[64];
+             sprintf(rotulo,"LABEL%d$ENTAO",++numero_rotulo);
+             Label* rotuloEntao = new Label(rotulo);
+             sprintf(rotulo,"LABEL%d$FIM",numero_rotulo);
+             Label* rotuloFim   = new Label(rotulo);
+     
+          stmTemp = new SEQ(new CJUMP(NE, condicional, new CONST(0), rotuloEntao, rotuloFim),
+                         new SEQ(new LABEL(rotuloEntao),
+                             new SEQ(entao,
+                                 new LABEL(rotuloFim))));
+     }
+     
+     addStm(stmTemp);
+};
+
+//Fragment
+void Tradutor::visit(FragmentNode* fragmentNode){
+      
+     programaPrincipal = 0;    
+     int bytes = 0;
+     StatementNode *primeiro = (fragmentNode->statementListNode)->statementNode;
+    
+    //Verifica se o Fragmento é nomeado
+    if ( typeid(* primeiro).name() == typeid(NameDeclNode).name() ){
+             NameDeclNode *parametros = dynamic_cast<NameDeclNode *>(primeiro);
+             
+             IdListNode *listaId = parametros->idListNode->idNode->parametros;
+             
+             while (listaId != NULL){
+                   bytes += listaId->idNode->tamanho;
+                    listaId = listaId->idListNode;
+             }
+             
+             if (bytes>bytes_para_passagem_de_parametros){
+                bytes_para_passagem_de_parametros = bytes;
+             }
+             
+             //Parametros
+             ExpList* listaParametros          = NULL;
+             ExpList* ordListaParametros       = NULL;
+             
+             if (fragmentNode->statementListNode != NULL){
+                StatementListNode* listaExpressao = fragmentNode->statementListNode;
+                while (listaExpressao != NULL){
+                      (listaExpressao->statementNode)-> accept(this);
+                      listaParametros = new ExpList(expressao,listaParametros);
+                      listaExpressao  = listaExpressao->statementListNode;
+                }
+                
+                while (listaParametros != NULL){
+                      ordListaParametros = new ExpList(listaParametros->prim, ordListaParametros);
+                      listaParametros          = listaParametros->prox;
+                }
+             }
+             listaParametros = NULL;
+             
+             //Chamada da funcao
+             char rotulo[64];
+             printf(rotulo,"PROCEDIMENTO$%s",retornaCharToken(parametros->idListNode->idNode->id));
+             
+             Temp* SL  = new Temp("SL");
+             Temp* FP  = new Temp("FP");
+             Label* rotuloProcedimento = new Label(rotulo);
+             
+             if (!programaPrincipal){
+                expressao = new MEM(new TEMP(FP));
+             }
+             else{
+                expressao = new TEMP(FP);  
+             }
+             
+             expressao = new ESEQ(
+                             new MOVE(
+                                 new TEMP(SL),expressao),
+                             new CALL(
+                                 new NAME(rotuloProcedimento),
+                                 new ExpList(new TEMP(SL), ordListaParametros)));
+  }else{
+     char rotulo[64];
+     printf(rotulo,"LABEL%d$INICIO",++numero_rotulo);
+     Label* rotuloInicio = new Label(rotulo);
+     printf(rotulo,"LABEL%d$FIM",numero_rotulo);
+     Label* rotuloFim    = new Label(rotulo);
+     
+     if (fragmentNode->statementListNode != NULL){
+     
+        StatementListNode*    listaSentenca;
+        StmList* listaSentencaRI           = NULL;
+        StmList* ordlistaSentencaRI       = NULL;
+        
+        listaSentenca = fragmentNode->statementListNode;
+        
+        while (listaSentenca != NULL){ 
+              (listaSentenca->statementNode)-> accept(this);
+              listaSentencaRI = new StmList(stmTemp,listaSentencaRI);
+              listaSentenca = listaSentenca->statementListNode;
+        }
+        
+        /*Ordenando a lista de sentencas.*/
+        while (listaSentencaRI != NULL){
+              ordlistaSentencaRI = new StmList(listaSentencaRI->prim, ordlistaSentencaRI);
+              listaSentencaRI          = listaSentencaRI->prox;
+        }
+        listaSentencaRI = NULL;
+        lista_sentenca             = ordlistaSentencaRI;
+        stmTemp = new SEQ(new LABEL(rotuloInicio),
+                       new SEQ(stmTemp, 
+                           new LABEL(rotuloFim)));
+     }
+     else{
+        stmTemp = new SEQ(
+                       new LABEL(rotuloInicio),
+                       new LABEL(rotuloFim));
+     }
+  }
+      addStm(stmTemp); 
+      programaPrincipal = 1;
+};
+
+//NameDecl
+void Tradutor::visit(NameDeclNode* nameDeclNode){
+   	
+	IdListNode* idList = nameDeclNode->idListNode;
+	inFrame * iFrame = new inFrame(idList->idNode->offset);
+	
+	
+	if (listaAcesso == NULL){
+		listaAcesso = new ListaAcesso(iFrame,NULL);
 	}else{
-		StmList *atual = this->corpo;
-		while (atual->prox != NULL){
-			atual = atual->prox;	
+		ListaAcesso *nova = listaAcesso;
+        while (nova->prox != NULL){
+			nova = nova->prox;
 		}
-		StmList * sl = new StmList(sentenca,NULL);
-		atual->prox = sl;	
+		nova->prox = new ListaAcesso(iFrame,NULL);
+	}
+	
+  
+	while (idList != NULL){
+		IdNode* id = idList->idNode;	
+		inFrame * iFrame =new inFrame(id->offset);
+		
+		ListaAcesso *atual = listaAcesso;
+		while (atual->prox != NULL){
+			atual = atual->prox;
+		}
+		ListaAcesso * listaAcesso2 = new ListaAcesso(iFrame,NULL);
+		atual->prox = listaAcesso2;
+				
+		idList = idList->idListNode;
+	}
+	
+   
+    if ((nameDeclNode->modifierListNode) != NULL) (nameDeclNode->modifierListNode)->accept(this);
+      (nameDeclNode->idListNode)->accept(this);
+   
+};
+
+
+//Program
+void Tradutor::visit(ProgramNode* programNode){
+
+     programaPrincipal = 1;
+     lista_sentenca = NULL;
+     
+     if (programNode->stmtListNode != NULL){
+         (programNode->stmtListNode)->accept(this);
+     }
+
+
+     
+     FrameMips * frame = new FrameMips(new Label("PROCEDIMENTO$PRINCIPAL"),listaAcesso);
+     
+     Fragmento* procedimento = new Procedimento(frame,lista_sentenca);
+     
+     addFragmento(procedimento);
+    
+      VisitorArvoreIntermediaria* visitorAI = new VisitorArvoreIntermediaria();
+      listaFragmentos->accept(visitorAI);
+};
+
+
+
+void Tradutor::visit(FragCallNode* fragCallNode){
+   
+     (fragCallNode->idNode)->accept(this);
+     (fragCallNode->expressionList)->accept(this);
+
+	Temp* SL  = new Temp("SL");
+	Temp* FP  = new Temp("FP");
+	ExpList * expList = new ExpList(new TEMP(SL),NULL);
+	while(fragCallNode->expressionList != NULL){
+		if (fragCallNode->expressionList->expressionNode != NULL){
+	    	fragCallNode->expressionList->expressionNode->accept(this);
+			Exp * expT = expressao;	
+			ExpList *lAtual = expList;
+			
+            while (lAtual->prox != NULL){
+				lAtual = lAtual->prox;	
+			}
+			ExpList * expT2 = new ExpList(expT,NULL);
+			lAtual->prox = expT2;	
+			fragCallNode->expressionList = fragCallNode->expressionList->expressionListNode;
+		}
+	}    	
+		
+	if (!programaPrincipal){
+                expressao = new MEM(new TEMP(FP));
+                }
+             else{
+                expressao = new TEMP(FP);  
+             }
+             	
+	stmTemp = new EXP(new ESEQ( new MOVE( new TEMP(SL),expressao),
+								new CALL(
+									new NAME(new Label(retornaCharToken(fragCallNode->idNode->id))),
+									expList)
+								)
+							);
+	
+    
+
+      addStm(stmTemp);										
+	
+};
+
+void Tradutor::visit(ConstantNode* constantNode){ 
+     (constantNode->nameNode)->accept(this);
+     (constantNode->value)->accept(this);
+};
+
+void Tradutor::visit(BitwiseOpNode* bitwiseOpNode){
+     (bitwiseOpNode->expressionNode1)->accept(this);
+     (bitwiseOpNode->expressionNode2)->accept(this);
+};
+
+void Tradutor::visit(ExpressionListNode* expressionListNode){
+     if ((expressionListNode->expressionNode) != NULL )(expressionListNode->expressionNode)->accept(this);
+     if ((expressionListNode->expressionListNode) != NULL )(expressionListNode->expressionListNode)->accept(this);
+};
+void Tradutor::visit(CallNode* callNode){    
+     (callNode->idNode)->accept(this);
+     (callNode->expressionListNode)->accept(this);
+};
+
+void Tradutor::visit(IdListNode* idListNode){
+     if ((idListNode->idListNode) == NULL){ 
+         (idListNode->idNode)->accept(this);
+     }else{
+         (idListNode->idNode)->accept(this);
+         (idListNode->idListNode)->accept(this);
+     }
+};
+
+void Tradutor::visit(ModifierListNode* modifierListNode){
+     if (modifierListNode->modifierNode)(modifierListNode->modifierNode)->accept(this);        
+     if (modifierListNode->modifierListNode)(modifierListNode->modifierListNode)->accept(this);    
+};
+
+void Tradutor::visit(ModifierNode* modifierNode){
+  
+}; 
+
+void Tradutor::visit(NegativeNode* negativeNode){
+     (negativeNode->expressionNode)->accept(this);
+};
+
+ListaDeFragmentos* Tradutor::getListaFragmentos(){
+
+};
+
+void Tradutor::addFragmento(Fragmento * frag){
+	if (listaFragmentos == NULL){
+		listaFragmentos = new ListaDeFragmentos(frag,NULL);
+	}else{
+		ListaDeFragmentos *temp = listaFragmentos;
+		while (temp->prox != NULL){
+			temp = temp->prox;	
+		}
+		ListaDeFragmentos * temp2 = new ListaDeFragmentos(frag,NULL);
+		temp->prox = temp2;	
+		listaFragmentos = temp;
+	}    	
+};
+
+void Tradutor::addStm(Stm * stm){
+	if (lista_sentenca == NULL){
+		lista_sentenca = new StmList(stm,NULL);
+	}else{
+		StmList *temp = lista_sentenca;
+		while (temp->prox != NULL){
+			temp = temp->prox;	
+		}
+		StmList * temp2 = new StmList(stm,NULL);
+		temp->prox = temp2;	
+		lista_sentenca = temp;
 	}		
 }
 
-void Tradutor::salvaFrag(){
-	/**
-	esse metodo salva as informacoes necessarias para a construcao do fragmento
-	no caso, o corpo e os dados, os valores atuais sao empilhados e em seguida liberados para 
-	o novo fragmento. É usado quando o visitor chega em um no de novo fragmento (funcao,proc)
-	**/
-	this->empilhaFrag(this->corpo,this->dados);
-	this->corpo = NULL;
-	this->dados = NULL;
-}
 
-void Tradutor::restauraFrag(){
-	/**
-	esse metodo restaura as informacoes do fragmento anterior, incluindo o fragmento principal
-	É usado quando o visitor sai de um no fragmento (funcao,proc)
-	**/
-	TPilhaFragmentos * topo = this->getTopoFrag();
-	this->corpo = topo->corpo;
-	this->dados = topo->dados;
-	this->desempilhaFrag();	
-}
 
-Stm * Tradutor::seqBloco(FragmentNode *o){
-	/**
-	esse metodo cria a sequencia de comandos do bloco
-	**/
-	if (o->s1 != NULL){
-		o->sl->s->accept(this);
-		Stm * stm = this->stmTemp;
-		o->sl = o->sl->sl;
-		return new SEQ(stm,this->seqBloco(o));
-	}else{
-		return new LABEL(new Label("FIM$BLOCO"));
-	}
-}
-
-Stm * Tradutor::seqMoves(WriteNode *o){
-	/**
-	esse metodo cria uma sequencia de de moves para stdout ... usado no write
-	**/
-	if (o->el != NULL){
-		o->el->e->accept(this);
-		Exp * exp = this->expTemp;
-		Stm * stm = new MOVE(new TEMP(new Temp("stdout")),exp);
-		o->el = o->el->el; //adiantar ponteiro
-		return new SEQ(stm,this->seqMoves(o));
-	}else{
-		return NULL;
-	}
-}
-
-Stm * Tradutor::seqMoves(ReadNode *o){
-	/**
-	esse metodo cria uma sequencia de de moves para stdout ... usado no read
-	**/
-	if (o->el != NULL){
-		o->el->e->accept(this);
-		Exp * exp = this->expTemp;
-		Stm * stm = new MOVE(exp,new TEMP(new Temp("stdin")));
-		o->el = o->el->el; //adiantar ponteiro
-		return new SEQ(stm,this->seqMoves(o));
-	}else{
-		return NULL;
-	}
-}
-
-Exp * Tradutor::acessoNaoLocal(int n){
-	if ( n != 0 ){
-		return new MEM(new BINOP(MAIS,new CONST(0),this->acessoNaoLocal(n-1)));
-	}else{
-		return new TEMP(FP);
-	}
-}
-
-Exp * Tradutor::seqMem(int n){
-	if (n != 0){
-		return new MEM(this->seqMem(n-1));
-	}else{
-		return new TEMP(FP);
-	}
-}
-
-void Tradutor::visit(Stmt *o){
-};
-
-void Tradutor::visit(ModifierNode *o){
-};
-
-void Tradutor::visit(ProgramNode* o){
-	if ( o->sl != NULL ){
-		o->sl->accept(this);
-	}
-	//criando o frame do procedimento Principal
-	FrameMips * frame = new FrameMips(new Label("principal"),this->dados);
-	
-	Procedimento * proc = new Procedimento(frame,this->corpo);
-	
-	this->adicionaFragmento(proc);	
-};
-
-void Tradutor::visit(StatementListNode *o){
-	if (o->s != NULL){
-        o->s->accept(this);
-	}
-	if ( o->sl != NULL ){
-		o->sl->accept(this);
-	}
-};
-
-void Tradutor::visit(Exp *o){
-	//o->visit(this);
-};
-
-void Tradutor::visit(ExpressionListNode *o){
-	o->e->accept(this);
-	if ( o->el != NULL ){
-		o->el->accept(this);
-	}
-};
-	
-void Tradutor::visit(ModifierListNode *o){
-	o->m->accept(this);
-	if ( o->ml != NULL ){
-		o->ml->accept(this);
-	}
-};
-
-void Tradutor::visit(IdListNode *o){
-	o->i->accept(this);
-	if ( o->il != NULL ){
-		o->il->accept(this);
-	}
-};
-
-void Tradutor::visit(IfNode *o){
-    o->e->accept(this); //expressao
-    Exp * exp = this->expTemp;
-    this->adicionaStm = 0;
-    this->adicionaBloco = 0;
-    o->s1->accept(this); //statement1
-    Stm * stmTrue = this->stmTemp;
-    Stm * stmCondicao;
-	if ( o->s2 != NULL ){ //s2 é o statement do else , diferente de NULO
-		o->s2->accept(this);
-	    Stm * stmFalse = this->stmTemp;		
-		stmCondicao = new SEQ(
-								new CJUMP(DIFERENTE,exp,new CONST(0),new Label("ENTAO"),new Label("SENAO")),
-								new SEQ(
-									new LABEL(new Label("ENTAO")),
-									new SEQ(
-										new SEQ(
-											stmTrue,
-											new JUMP(new NAME(new Label("FIMSE")))
-										),
-										new SEQ(
-											new LABEL(new Label("SENAO")),
-											new SEQ(
-												stmFalse,
-												new LABEL(new Label("FIMSE"))
-											)
-										)
-									)
-								)
-							);
-	    
-	}else{
-		stmCondicao = new SEQ(new CJUMP(DIFERENTE,exp,new CONST(0),new Label("ENTAO"),new Label("FIM")),new SEQ(new LABEL(new Label("ENTAO")),new SEQ(stmTrue,new LABEL(new Label("FIM")))));
-	}
-	this->adicionaSentenca(stmCondicao);
-	this->adicionaStm = 1;
-    this->adicionaBloco = 1;	
-
-};
-
-void Tradutor::visit(WhileNode *o){
-	o->e->accept(this); //expressao
-	Exp * exp = this->expTemp;
-	
-    this->adicionaStm = 0;
-    this->adicionaBloco = 0;
-
-   	o->s->accept(this); //statement    
-    Stm * stm = this->stmTemp;	
-
-    Stm * stmWhile = new SEQ(
-    					new LABEL(new Label("TESTE")),
-    					new SEQ(
-    						new CJUMP(DIFERENTE,exp,new CONST(0),new Label("INICIO"),new Label("FIM")),
-    						new SEQ(
-    							new LABEL(new Label("INICIO")),
-    							new SEQ(
-    								stm,
-    								new SEQ(
-    									new JUMP(new NAME(new Label("TESTE"))),
-    									new LABEL(new Label("FIM"))
-    								)
-    							)
-    						)
-    					)
-    				);
-	this->adicionaSentenca(stmWhile);
-
-    this->adicionaStm = 1;
-    this->adicionaBloco = 1;
-	
-   
-};
-
-void Tradutor::visit(WriteNode *o){
-	this->stmTemp = this->seqMoves(o);
-	if (this->adicionaStm){
-		this->adicionaSentenca(this->stmTemp);
-	}
-};
-
-void Tradutor::visit(IdNode *o){
-	if (( o->p != NULL ) && (o->p->vector == 0)){
-		if (o->p->tipoId == VARIAVEL){
-			if (o->dadoLocal){
-				this->expTemp = new MEM(new BINOP(MAIS,new TEMP(FP),new CONST(o->p->offset)));				
-			}else{
-				int diff = (o->nivelChamada - o->p->escopo);
-				this->expTemp = new MEM(new BINOP(MAIS,new CONST(o->p->offset),this->acessoNaoLocal(diff)));				
-			}	
-		}
-	}
-};
-
-void Tradutor::visit(NumberNode *o){
-	if (o->isFloat){
-		this->expTemp = new CONSTF(atof(getSymbol(o->num)));
-	}else{
-		this->expTemp = new CONST(atoi(getSymbol(o->num)));
-	}
-};
-
-void Tradutor::visit(LiteralNode *o){
-	this->expTemp = new NAME(new Label(getSymbol(o->lit)));
-};
-
-void Tradutor::visit(NameDeclNode *o){
-	//o->id é um idlist
-	Id * id = o->id->i;
-
-	//cria o acesso local
-	inFrame * inf = new inFrame(id->p->offset);
-	
-	//colocar na lista de acesso;
-	if (this->dados == NULL){
-		this->dados = new ListaAcesso(inf,NULL);
-	}else{
-		ListaAcesso *atual = this->dados;
-		while (atual->prox != NULL){
-			atual = atual->prox;
-		}
-		ListaAcesso * la = new ListaAcesso(inf,NULL);
-		atual->prox = la;
-	}
-	
-	//percorrendo idlist
-	Idlist * il = o->id->il;
-	while (il != NULL){
-		Id * id = il->i;	
-		inFrame * inf = new inFrame(id->p->offset);
-		
-		ListaAcesso *atual = this->dados;
-		while (atual->prox != NULL){
-			atual = atual->prox;
-		}
-		ListaAcesso * la = new ListaAcesso(inf,NULL);
-		atual->prox = la;
-				
-		il = il->il;
-	}
-	o->mod->accept(this);
-	o->id->accept(this);
-};
-
-void Tradutor::visit(FragmentNode *o){
-	int isConstante = 0;
-	int isConstanteLiteral = 0;
-	int isConstanteNumerica	= 0;
-	int isBloco = 0;
-    if (o->mod != NULL) {
-			o->mod->accept(this);
-			o->id->accept(this);
-			if (o->num != NULL){ //CONSTANTE NUMERICA
-				isConstante = 1;
-				isConstanteNumerica = 1;
-				o->num->accept(this);
-			}else{
-				this->salvaFrag();
-				o->sl->accept(this); //FUNCAO
-			}
-	}else{
-	    if (o->id != NULL) { 
-			o->id->accept(this);
-			if ( o->lit != NULL ){ 
-				isConstante = 1;				
-				isConstanteLiteral = 1;				
-				o->lit->accept(this); //CONSTANTE LITERAL
-			}else{
-				this->salvaFrag();				
-				o->sl->accept(this); //PROCEDIMENTO
-			}
-		}else{
-			if (o->sl != NULL) { 
-				isBloco = 1;	//BLOCO
-				this->adicionaStm = 0;
-				this->stmTemp = new SEQ(new LABEL(new Label("INICIO$BLOCO")),this->seqBloco(o));
-				if (this->adicionaBloco){
-					this->adicionaSentenca(this->stmTemp);						
-				}
-				this->adicionaStm = 1;				
-			}
-		}		
-	}
-	if (!isBloco){
-		if ( isConstante ){
-			if (isConstanteLiteral){
-				constanteLiteral * ci = new constanteLiteral(o->lit->lit);
-				this->adicionaFragmento(ci);
-			}else{
-				if (isConstanteNumerica){
-					if (o->num->isFloat){
-						nomeReal * nr = new nomeReal(new Label(getSymbol(o->id->id)),atof(getSymbol(o->num->num)));
-						this->adicionaFragmento(nr);					
-					}else{
-						nomeInteiro * ni = new nomeInteiro(new Label(getSymbol(o->id->id)),atoi(getSymbol(o->num->num)));
-						this->adicionaFragmento(ni);											
-					}
-				}
-			}
-		}else{		
-			//final do fragment, caso funcao e procedimentos criar o frame
-			//this->corpo e this->dados nesse ponto sao do fragment
-			FrameMips * frame = new FrameMips(new Label(getSymbol(o->id->id)),this->dados);
-			Procedimento * proc = new Procedimento(frame,this->corpo);
-			this->adicionaFragmento(proc);
-	
-			this->restauraFrag();
-		}
-	}
-
-};
-
-void Tradutor::visit(CallNode *o){
-	int diff;
-	if (o->id->nivelChamada != 0){
-		diff = (o->id->nivelChamada - o->id->p->escopo);
-	}
-	else{
-		diff = 0;
-	}
-		
-	ExpList * expList = new ExpList(new TEMP(SL),NULL);
-	while(o->e != NULL){ //o->e é a ExpList
-		if ( o->e->e != NULL){
-			o->e->e->accept(this); //o->e->e e a expressao
-			Exp * exp = this->expTemp;	
-		
-			//adiciona os parametros a lista de expressao
-			ExpList *atual = expList;
-			while (atual->prox != NULL){
-				atual = atual->prox;	
-			}
-			ExpList * el = new ExpList(exp,NULL);
-			atual->prox = el;	
-			o->e = o->e->el;
-		}
-	}    	
-		
-	this->expTemp = new ESEQ(
-						new MOVE(
-							new TEMP(SL),
-							seqMem(diff)),
-						new CALL(
-							new NAME(new Label(getSymbol(o->id->id))),
-							expList
-						)
-					);
-};
-
-void Tradutor::visit(ArrayNode *o){
-    o->e->accept(this);
-	Exp * indice = this->expTemp;
-	this->expTemp = new MEM(
-							new BINOP(
-								MAIS,
-								new MEM(
-									new BINOP(
-										MAIS,
-										new TEMP(FP),
-										new CONST(o->id->p->offset)
-									)
-								),
-								new BINOP(
-									MULTIPLICACAO,
-									new CONST(this->tamanhoPalavra),
-									indice
-								)
-							)
-						);
-};
-
-void Tradutor::visit(AssignNode *o){
-	if (o->idNode != NULL){
-		o->idNode->accept(this);
-        Exp * esquerda = expTemp;
-		
-        o->expressionNode1->accept(this);
-		Exp * direita = expTemp;
-		
-        Stm * stmAssign = new MOVE(esquerda,direita);
-		stmTemp = stmAssign;
-
-		if (adicionaStm){
-			adicionaSentenca(stmAssign);
-		}
-		
-	}else{
-		o->ArrayNode->accept(this);
-        Exp * esquerda =expTemp;
-		
-        o->ExpressionNode->accept(this);
-		Exp * direita = expTemp;
-		
-        Stm * stmAssign = new MOVE(esquerda,direita);
-		stmTemp = stmAssign;
-		
-		if (adicionaStm){
-			adicionaSentenca(stmAssign);
-		}
-
-	}
-};
-
-void Tradutor::visit(ReadNode *o){
-	this->stmTemp = this->seqMoves(o);
-	if (this->adicionaStm){
-		this->adicionaSentenca(this->stmTemp);
-	}
-};
-
-void Tradutor::visit(FragCallNode *o){
-	int diff;
-	if (o->id->nivelChamada != 0){
-		diff = (o->id->nivelChamada - o->id->p->escopo);
-	}
-	else{
-		diff = 0;
-	}
-	
-	ExpList * expList = new ExpList(new TEMP(SL),NULL);
-	while(o->e != NULL){ //o->e é a ExpList
-		if ( o->e->e != NULL){
-			o->e->e->accept(this); //o->e->e e a expressao
-			Exp * exp = this->expTemp;	
-		
-			//adiciona os parametros a lista de expressao
-			ExpList *atual = expList;
-			while (atual->prox != NULL){
-				atual = atual->prox;	
-			}
-			ExpList * el = new ExpList(exp,NULL);
-			atual->prox = el;	
-			o->e = o->e->el;
-		}
-	}    	
-		
-	this->stmTemp = new EXP(
-						new ESEQ(
-								new MOVE(
-									new TEMP(SL),
-									seqMem(diff)),
-								new CALL(
-									new NAME(new Label(getSymbol(o->id->id))),
-									expList
-									)
-								)
-							);
-	if (this->adicionaStm){
-		this->adicionaSentenca(this->stmTemp);
-	}									
-										
-};
-
-void Tradutor::visit(RelOpNode *o){
-    o->e1->accept(this);
-    Exp * esquerda = this->expTemp;
-	o->e2->accept(this);
-	Exp * direita = this->expTemp;
-
-	TEMP  *R = new TEMP(new Temp("R"));
-   	Label *T = new Label("T");
-   	Label *F = new Label("F");
-
-   	this->expTemp = new ESEQ(
-   						new SEQ(
-   							new MOVE(R,new CONST(1)),
-   							new SEQ(
-   								new CJUMP(o->op,esquerda,direita,T,F),
-   								new SEQ(
-   									new LABEL(F),
-   									new SEQ(
-   										new MOVE(R,new CONST(0)),
-   										new LABEL(T)
-   									)
-   								)
-   							)
-   						)
-   						,R
-   					);	  	  	
-};
-
-void Tradutor::visit(AddOpNode *o){
-   o->e1->accept(this);
-   Exp * esquerda = this->expTemp;
-   o->e2->accept(this);
-   Exp * direita = this->expTemp;
-   this->expTemp = new BINOP(o->op, esquerda, direita);
-};
-
-void Tradutor::visit(MultOpNode *o){
-   o->e1->accept(this);
-   Exp * esquerda = this->expTemp;
-   o->e2->accept(this);
-   Exp * direita = this->expTemp;
-   this->expTemp = new BINOP(o->op, esquerda, direita);
-};
-
-void Tradutor::visit(BoolOpNode *o){
-   o->e1->accept(this);
-   Exp * esquerda = this->expTemp;
-   o->e2->accept(this);
-   Exp * direita = this->expTemp;
-   
-   TEMP  *R = new TEMP(new Temp("R"));
-   Label *L1 = new Label("L1");
-   Label *L2 = new Label("L2");   
-   Label *L3 = new Label("L3");
-
-   if (o->op == AND){
-	   this->expTemp = new ESEQ(
-	   							new SEQ(
-	   								new MOVE(
-	   									 R,
-	   									 new CONST(0)
-											)
-	   								,new SEQ(
-	   									new CJUMP(DIFERENTE,esquerda,new CONST(0),L1,L2),
-	   									new SEQ(
-	   										new LABEL(L1),
-	   										new SEQ(
-	   											new CJUMP(DIFERENTE,direita,new CONST(0),L3,L2),
-	   											new SEQ(
-	   											    new LABEL(L3),
-	   											    new SEQ(
-	   											        new MOVE(R,new CONST(1)),
-	   											        new LABEL(L2)
-											        )
-												)
-											)
-										)
-									)
-								)
-								,R
-						);
-	}else{
-		if (o->op == OR){
-		this->expTemp = new ESEQ(
-						new SEQ(
-							new MOVE(R,esquerda),
-							new SEQ(
-								new CJUMP(DIFERENTE,direita,new CONST(0),L1,L2),
-								new SEQ(
-									new LABEL(L1),
-									new SEQ(
-										new MOVE(R,new CONST(1)),
-										new LABEL(L2)
-									)
-								)
-							)
-						)
-						,R
-					);
-		}
-	}
-};
-
-void Tradutor::visit(BitwiseOpNode *o){
-    o->e1->accept(this);
-    o->e2->accept(this);
-};
-
-void Tradutor::visit(NotNode *o){
-    o->e->accept(this);
-    Exp * e = this->expTemp;
-    this->expTemp = new BINOP(AND, new CONST(-1), e);
-};
-
-void Tradutor::visit(NegativeNode *o){
-    o->e->accept(this);
-    Exp * e = this->expTemp;
-    this->expTemp = new BINOP(MULTIPLICACAO, new CONST(-1), e);
-};
 

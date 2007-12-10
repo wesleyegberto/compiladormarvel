@@ -1,7 +1,7 @@
 [Project]
 FileName=Marvel.dev
 Name=Marvel
-UnitCount=35
+UnitCount=37
 Type=1
 Ver=1
 ObjFiles=
@@ -20,7 +20,7 @@ ObjectOutput=
 OverrideOutput=0
 OverrideOutputName=Marvel.exe
 HostApplication=
-Folders="Analisador Lexico","Analisador Semantico","Analisador Semantico/Escopo","Analisador Semantico/Tipo","Analisador Semantico/Variavel","Analisador Sintatico","Arvore Sintaxe Abstrata",Buffer,"Codigo Intermediario","Codigo Intermediario/Visitor",Erro,"Tabela de Simbolos",Visitor
+Folders="Analisador Lexico","Analisador Semantico","Analisador Semantico/Escopo","Analisador Semantico/Tipo","Analisador Semantico/Variavel","Analisador Sintatico","Arvore Sintaxe Abstrata",Buffer,"Codigo Intermediario","Codigo Intermediario/Visitor",Erro,"Gerador de Código","Tabela de Simbolos",Visitor
 CommandLine=codigo.fra
 UseCustomMakefile=0
 CustomMakefile=
@@ -399,6 +399,26 @@ BuildCmd=
 FileName=Tradutor.h
 CompileCpp=1
 Folder=Codigo Intermediario
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit36]
+FileName=canonizador.cpp
+CompileCpp=1
+Folder=Gerador de Código
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit37]
+FileName=canonizador.h
+CompileCpp=1
+Folder=Gerador de Código
 Compile=1
 Link=1
 Priority=1000

@@ -1,18 +1,26 @@
 
-    FLOAT a;
-    FLOAT b;
+    INTEGER a;
+    INTEGER b;
     INTEGER constante1;
     
     FRAGMENT FLOAT calcula;
-        PARAM FLOAT k;
-        PARAM FLOAT h;
-        FLOAT T;
+        PARAM INTEGER k;
+        PARAM INTEGER h;
+        INTEGER T;
+        T = k + h;
+        IF 2 < a a = 2 ELSE   b = a * b;
         FRAGMENT constante2; 
              "TESTE" 
         ENDFRAGMENT
     ENDFRAGMENT;
     
-    calcula(a,b);
+    a = calcula(a,b);
     
+
+    
+    WRITE (a)
             
-    b = a + b
+   
+
+
+

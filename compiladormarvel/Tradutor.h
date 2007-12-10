@@ -14,23 +14,20 @@ class Tradutor : public Visitor {
       	
        private:
 
-    	Exp * expressaoTemp;
-		Stm * sentencaTemp;
-		int bytes_para_passagem_de_parametros;
-        int programaPrincipal;
+		ListaDeFragmentos * Fragmentos;
+		ListaAcesso* dados;
+		StmList * corpo;
+		Exp * expressao;
+		Stm * sentenca;
         int numero_temporario;
         int numero_rotulo;
         int numero_literal;
-        StmList * lista_sentenca;
-		ListaDeFragmentos *listaFragmentos;
-		ListaAcesso *listaAcesso;
 
 		
       public:
             // Declaração do construtor
              Tradutor();
                           
-            
              // Métodos visitantes
               void visit(ProgramNode* programNode);
               void visit(StatementListNode* stmtNode);
@@ -60,9 +57,9 @@ class Tradutor : public Visitor {
               void visit(NumberNode* numberNode);
               void visit(LiteralNode* literalNode);
 
-              ListaDeFragmentos* getListaFragmentos();
-              void addFragmento(Fragmento * frag);
-              void addStm(Stm * stm);
+              ListaDeFragmentos* getFragmentos();
+              void adicionaFragmento(Fragmento * frag);
+              void adicionaSentenca(Stm * sentenca);
   
              
                                        

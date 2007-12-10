@@ -1,13 +1,21 @@
+
+
 #include <stdio.h>
 #include "VisitorArvoreIntermediaria.h"
 #include "ArvoreIntermediaria.h"
+#include "Tokens.h"
 
 
 VisitorArvoreIntermediaria::VisitorArvoreIntermediaria(){
 	nivel = 0;
 	cont = 0;
+    printf("\n         ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป\n");
+    printf("         บ                  ARVORE DE CODIGO INTEMEDIARIO                บ\n");
+    printf("         ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ\n");
+     
 };
 
+int eLABEL = 0;
 void VisitorArvoreIntermediaria::visit(ExpList *o){
 	o->prim->accept(this);
 	if ( o->prox != NULL){
@@ -42,14 +50,28 @@ void VisitorArvoreIntermediaria::visit(NAME *o){
 void VisitorArvoreIntermediaria::visit(TEMP *o){
 	nivel++;
 	ImprimeEspacos();	
-	printf("TEMP.");
+    printf("TEMP.");
 	o->t->accept(this);	    	
 	nivel--;
 };
 void VisitorArvoreIntermediaria::visit(BINOP *o){
 	nivel++;
 	ImprimeEspacos();
-	printf("BINOP.%s\n",o->binOP);
+     switch(o->binOP){
+        case MULT:printf("BINOP.MULT\n");
+              break;              
+        case DIV:printf("BINOP.DIV\n");
+          break;              
+        case MOD:printf("BINOP.MOD\n");
+          break;              
+        case PLUS:printf("BINOP.PLUS\n");
+          break;              
+        case MINUS:printf("BINOP.MINUS\n");
+          break;              
+        default: printf("BINOP\n");        
+     }
+
+
 	o->left->accept(this);
 	o->right->accept(this);
 	nivel--;
@@ -58,7 +80,7 @@ void VisitorArvoreIntermediaria::visit(MEM *o){
 	nivel++;
 	ImprimeEspacos();	
 	printf("MEM.\n");
-	o->e->accept(this);	
+	if(o->e !=NULL) o->e->accept(this);	
 	nivel--;
 };
 void VisitorArvoreIntermediaria::visit(CALL *o){
@@ -107,11 +129,26 @@ void VisitorArvoreIntermediaria::visit(JUMP *o){
 void VisitorArvoreIntermediaria::visit(CJUMP *o){
 	nivel++;
 	ImprimeEspacos();	
-	printf("CJUMP.%s\n",o->relOp);
+	     switch(o->relOp){
+        case EQUALS:printf("CJUMP.EQUALS\n");
+              break;              
+        case LT:printf("CJUMP.LT\n");
+          break;              
+        case LE:printf("CJUMP.LE\n");
+          break;              
+        case GE:printf("CJUMP.GE\n");
+          break;              
+        case GT:printf("CJUMP.GT\n");
+          break;   
+        case NE:printf("CJUMP.NE\n");
+          break;            
+        default: printf("CJUMP\n");        
+     }
+
 	o->left->accept(this);
 	o->right->accept(this);
-	o->ifTrue->accept(this);
-	o->ifFalse->accept(this);		
+//	o->ifTrue->accept(this);
+//	o->ifFalse->accept(this);		
 	nivel--;
 };
 void VisitorArvoreIntermediaria::visit(SEQ *o){
@@ -131,7 +168,9 @@ void VisitorArvoreIntermediaria::visit(LABEL *o){
 	nivel++;
 	ImprimeEspacos();
 	printf("LABEL.");
+	eLABEL = 1;
 	o->l->accept(this);	
+	eLABEL = 0;
 	nivel--;
 };
 
@@ -147,11 +186,9 @@ void VisitorArvoreIntermediaria::visit(TempList *o){
 		o->tl->accept(this);
 	}	
 };
-void VisitorArvoreIntermediaria::visit(Label *o){
-	nivel++;
-	ImprimeEspacos();		
-	printf("%s\n",o->s);
-	nivel--;
+void VisitorArvoreIntermediaria::visit(Label *o){		
+//    ImprimeEspacos();
+    printf("%s\n",o->s);
 };
 void VisitorArvoreIntermediaria::visit(LabelList *o){
 	o->l->accept(this);
@@ -166,10 +203,6 @@ void VisitorArvoreIntermediaria::visit(inFrame *o){
 	nivel--;
 };
 void VisitorArvoreIntermediaria::visit(inReg *o){
-	nivel++;
-	ImprimeEspacos();		
-	//printf("InReg Temp: %i\n",o->temp);
-	nivel--;
 };
 void VisitorArvoreIntermediaria::visit(ListaAcesso *o){
 	o->l->accept(this);
@@ -178,7 +211,7 @@ void VisitorArvoreIntermediaria::visit(ListaAcesso *o){
 	}	
 };
 void VisitorArvoreIntermediaria::visit(FrameMips *o){
-	printf("\n --------------------- FRAME ---------------------\n ");
+	printf("\n   ออออออออออออออออออออออออออออออออออ FRAME ออออออออออออออออออออออออออออออออออ\n ");
 	nivel++;
 	ImprimeEspacos();	
 	if ( o->rotulo != NULL ){
@@ -203,21 +236,22 @@ void VisitorArvoreIntermediaria::visit(Procedimento *o){
 		o->frame->accept(this);
 	}
 	if (o->corpo != NULL){
-		printf("\n --------------------- CORPO ---------------------\n ");		
+		printf("\n   ออออออออออออออออออออออออออออออออออ CORPO ออออออออออออออออออออออออออออออออออ\n ");		
 		o->corpo->accept(this);
 	}
 };
 void VisitorArvoreIntermediaria::visit(constanteLiteral *o){
 	nivel++;
 	ImprimeEspacos();
-	printf("\n ---------------- CONSTANTE LITERAL ---------------\n ");			
-	printf("%d\n",o->indice);
+	printf("\n   ออออออออออออออออออออออออออออ CONSTANTE LITERAL ออออออออออออออออออออออออออออ\n ");			
+	ImprimeEspacos();
+    printf("%s\n",o->literal);
 	nivel--;	
 };
 void VisitorArvoreIntermediaria::visit(nomeReal *o){
 	nivel++;
 	ImprimeEspacos();
-	printf("\n ---------------- NOME REAL ---------------\n ");			
+	printf("\n   ออออออออออออออออออออออออออออออออออ NOME REAL ออออออออออออออออออออออออออออออออออ\n ");			
 	printf("Rotulo: ");	
 	o->l->accept(this);		
 	printf("\n Valor.%f",o->r);
@@ -226,7 +260,7 @@ void VisitorArvoreIntermediaria::visit(nomeReal *o){
 void VisitorArvoreIntermediaria::visit(nomeInteiro *o){
 	nivel++;
 	ImprimeEspacos();
-	printf("\n ---------------- NOME INTEIRO ---------------\n ");				
+	printf("\n   ออออออออออออออออออออออออออออออออออ NOME INTEIRO ออออออออออออออออออออออออออออออออออ\n ");				
 	printf("Rotulo: ");
 	o->l->accept(this);	
 	printf("\n Valor: %i",o->i);

@@ -289,9 +289,9 @@ void VerificadorTipos::visit(MultOpNode* multOpNode){
      }
      
      // Verifica se os tipos sao compativeis para essa operacao
-     if ((tipoExpressionNode1 != INTEGER) || 
-         (tipoExpressionNode1 != FLOAT) ||
-         (tipoExpressionNode2 != INTEGER) ||
+     if ((tipoExpressionNode1 != INTEGER) && 
+         (tipoExpressionNode1 != FLOAT) &&
+         (tipoExpressionNode2 != INTEGER) &&
          (tipoExpressionNode2 != FLOAT)) {
         // Lanca erro semantico de incompatibilidade de tipos na operacao multiplicacao
         emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "MULTIPLICACAO", linha);
@@ -400,8 +400,9 @@ void VerificadorTipos::visit(RelOpNode* relOpNode){
      (relOpNode->expressionNode2->accept(this));
      int tipoExpressionNode2 = tipo;
      
+
      // Verifica se os tipos sao iguais
-     if (tipoExpressionNode1 != tipoExpressionNode2) {
+     if (tipoExpressionNode1 != tipoExpressionNode2)  {
         // Lanca erro semantico de incompatibilidade de tipos na operacao relacional
         emiteErroSemantico(ERRO_TIPO_NAO_ESPERADO_OPERACAO, "RELACIONAL", linha);
         

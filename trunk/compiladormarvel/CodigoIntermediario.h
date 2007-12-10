@@ -35,9 +35,9 @@ class Procedimento: public Fragmento{
 
 class constanteLiteral: public Fragmento{
 	public:
-		int indice; //indice no array de lexemas	
+		char* literal;
 	public:
-		constanteLiteral(int i);
+		constanteLiteral(char* lt);
 		void accept(VisitorArvoreIntermediaria *v);		
 		~constanteLiteral();
 };

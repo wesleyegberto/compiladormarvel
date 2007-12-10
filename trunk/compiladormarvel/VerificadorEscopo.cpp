@@ -93,7 +93,7 @@ void VerificadorEscopo::visit(FragmentNode* fragmentNode){
     //Verifica se o Fragmento é nomeado
     if ( typeid(* primeiro).name() == typeid(NameDeclNode).name() )
        estaDeclarando = 1;
-    //else iniciaEscopo();
+
        
     
     StatementNode *segundo = fragmentNode->statementListNode->statementListNode->statementNode;
@@ -184,6 +184,8 @@ void VerificadorEscopo::visit(NameDeclNode* nameDeclNode){
              nameDeclNode->idListNode->idNode->tipo = tipo;  
              nameDeclNode->idListNode->idNode->tamanho = 8;                   
              nameDeclNode->idListNode->idNode->paiEscopo = paiAtual;
+             nameDeclNode->idListNode->idNode->offset = offset;
+             offset += 4;
              if (paiAtual->parametros == NULL)
                  paiAtual->parametros = new IdListNode(nameDeclNode->idListNode->idNode,NULL);
               else{
@@ -213,7 +215,9 @@ void VerificadorEscopo::visit(NotNode* notNode){
     (notNode->expressionNode)->accept(this);
 }
 
-void VerificadorEscopo::visit(NumberNode* numberNode){}
+void VerificadorEscopo::visit(NumberNode* numberNode){
+    numberNode->tipo = INTEGER;    
+}
 
 void VerificadorEscopo::visit(ProgramNode* programNode){
     iniciaEscopo();

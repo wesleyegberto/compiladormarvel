@@ -32,8 +32,8 @@ Procedimento::~Procedimento(){
 
 
 //Constante Literal
-constanteLiteral::constanteLiteral(int i){
-	this->indice = i;
+constanteLiteral::constanteLiteral(char* lt){
+	this->literal = lt;
 };
 void constanteLiteral::accept(VisitorArvoreIntermediaria *v){
 	v->visit(this);

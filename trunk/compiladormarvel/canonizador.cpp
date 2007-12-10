@@ -1,58 +1,92 @@
-#include "canonizador.h"
-
-// MoveCall
-MoveCall::MoveCall(TEMP *o, CALL *d){
-	origem  = o;
-	destino = d;
-};
-
-ExpList *MoveCall::kids(){
-	return origem->kids();
-};
-
-Stm *MoveCall::build(ExpList *kids){
-	return new MOVE(destino, origem->build(kids));
-};
-
-void MoveCall::accept(VisitorArvoreIntermediaria *v){
-    v->visit(this);
-};
-
-MoveCall::~MoveCall(){};
-
-
-// StmExpList
-StmExpList::StmExpList(Stm *s, ExpList *e) {
-	this->stm = s;
-	this->expList = e;
-};
-StmExpList::~StmExpList(){};
-
-
-
-// ExpCall
-ExpCall::ExpCall(CALL *c){
-	this->call = c;
-};
-
-ExpList *ExpCall::kids(){
-	return call->kids();
-};
-
-Stm *ExpCall::build(ExpList *kids){
-	return new EXP(call->build(kids));
-};
-
-void ExpCall::accept(VisitorArvoreIntermediaria *v){
-    v->visit(this);
-};
-
-ExpCall::~ExpCall(){};
-
-
-
-// ListaStmList
-ListaStmList::ListaStmList(StmList *a, ListaStmList *p){
-    this->atual = a;
-    this->prox = p;
-}
+//#include "canonizador.h"
+//
+//// Blocos Basicos
+//BasicBlocks::BasicBlocks(StmList *sl) {
+//	this->blocos = NULL;
+//	this->stmList = NULL;
+//    rotulo = new Label("FIM");
+//    makeBlocks(stms);
+//
+//};
+//void BasicBlocks::addStm(Stm *s) {
+//	if (this->stmList == NULL) this->stmList = new StmList(s,NULL);
+//	else {
+//		StmList *atual = this->stmList;
+//		while (atual->prox != NULL) atual = atual->prox;	
+//		StmList *sl = new StmList(s,NULL);
+//		atual->prox = sl;	
+//	}			
+//};
+//void BasicBlocks::doStms(StmList *sl){
+//    if (lista == NULL) doStms(new StmList(new JUMP(new NAME(this->rotulo)), NULL));
+//    else{
+//        // TODO esse typeof naum funciona
+//        if (typeof(sl->prim) == typeof(JUMP) || typeof(sl->prim) == typeof(CJUMP){
+//	        addStm(sl->prim);
+//	        makeBlocks(sl->prox);
+//        }else{ 
+//              if (typeof(sl->prim) == typeof(LABEL)){
+//                 LABEL *lbl = dynamic_cast<LABEL*>(sl->prim);
+//				 doStms(new StmList(new JUMP(new NAME(lbl->l)),sl));
+//              }else{
+//	             addStm(sl->prim);
+//	             doStms(sl->prox);
+//              }
+//			}
+//		}
+//};
+//void BasicBlocks::makeBlocks(StmList *sl) {
+//    if (sl != NULL){ 
+//	    if (typeof(sl->prim) == typeof(LABEL)) {
+//		    this->stmList = new StmList(sl->prim,NULL);
+//		    if (this->blocos == NULL) this->blocos = new StmListList(this->stmList,NULL);  	   				
+//			else{
+//				StmListList *atual = this->blocos;
+//				while (atual->prox != NULL)	atual = atual->prox;	
+//			 	atual->prox = new StmListList(this->stmList,NULL);
+//			}
+//			doStms(sl->prox);
+//		}else makeBlocks(new StmList(new LABEL(new Label()), sl));
+//	}
+//};
+//
+//
+//
+//// StmListList
+//StmListList::StmListList(StmList *a, StmListList *p){
+//    this->atual = a;
+//    this->prox = p;
+//}
+//
+//
+//
+//// StmExpList
+//StmExpList::StmExpList(Stm *s, ExpList *e) {
+//	this->stm = s;
+//	this->expList = e;
+//};
+//StmExpList::~StmExpList(){};
+//
+//
+//
+//// ExpCall
+//ExpCall::ExpCall(CALL *c){
+//	this->call = c;
+//};
+//
+//ExpList *ExpCall::kids(){
+//	return call->kids();
+//};
+//
+//Stm *ExpCall::build(ExpList *kids){
+//	return new EXP(call->build(kids));
+//};
+//
+//void ExpCall::accept(VisitorArvoreIntermediaria *v){
+//    v->visit(this);
+//};
+//
+//ExpCall::~ExpCall(){};
+//
+//
+//

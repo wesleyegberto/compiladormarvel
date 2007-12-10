@@ -10,7 +10,7 @@ class Exp{
 	public:
 		virtual void accept(VisitorArvoreIntermediaria *v) = 0;
 		virtual ExpList *kids() = 0;
-       virtual Exp *build(ExpList *kids) = 0;
+        virtual Exp *build(ExpList *kids) = 0;
 };
 
 class ExpList {
@@ -28,7 +28,7 @@ class Stm{
 	public:
         virtual void accept(VisitorArvoreIntermediaria *v) = 0;			
         virtual ExpList *kids() = 0;
-        virtual Stm *build(ExpList kids) = 0;
+        virtual Stm *build(ExpList *kids) = 0;
 };
 
 class StmList {
@@ -50,6 +50,8 @@ class CONST: public Exp{
 	public:
 		CONST(int value);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Exp *build(ExpList *kids);
 		~CONST();
 };
 	
@@ -59,6 +61,8 @@ class CONSTF: public Exp{
 	public:
 		CONSTF(float value);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Exp *build(ExpList *kids);
 		~CONSTF();
 };
 
@@ -68,6 +72,8 @@ class NAME: public Exp{
 	public:
 		NAME(Label *l);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Exp *build(ExpList *kids);
 		~NAME();
 };
 
@@ -77,6 +83,8 @@ class TEMP: public Exp{
 	public:
 		TEMP(Temp *t);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Exp *build(ExpList *kids);
 		~TEMP();
 };
 
@@ -88,6 +96,8 @@ class BINOP: public Exp{
 	public:
 		BINOP(int binOP, Exp *left, Exp *right);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Exp *build(ExpList *kids);
 		~BINOP();
 };
 
@@ -97,6 +107,8 @@ class MEM: public Exp{
 	public:
 		MEM(Exp *e);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Exp *build(ExpList *kids);
 		~MEM();
 };
 
@@ -107,6 +119,8 @@ class CALL: public Exp{
 	public:
 		CALL(Exp *func, ExpList *args);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Exp *build(ExpList *kids);
 		~CALL();
 };
 
@@ -117,6 +131,8 @@ class ESEQ: public Exp{
 	public:
 		ESEQ(Stm *s, Exp *e);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Exp *build(ExpList *kids);
 		~ESEQ();
 };	
 
@@ -130,7 +146,9 @@ class MOVE: public Stm{
 	public:
 		MOVE(Exp *dst, Exp *src);
 		void accept(VisitorArvoreIntermediaria *v);
-		~MOVE();
+		ExpList *kids();
+        Stm *build(ExpList *kids);
+        ~MOVE();
 };
 
 class EXP: public Stm{
@@ -139,7 +157,9 @@ class EXP: public Stm{
 	public:
 		EXP(Exp *e);
 		void accept(VisitorArvoreIntermediaria *v);
-		~EXP();
+		ExpList *kids();
+        Stm *build(ExpList *kids);
+        ~EXP();
 };
 
 class JUMP: public Stm{
@@ -150,6 +170,8 @@ class JUMP: public Stm{
 		JUMP(Exp *e);
 		JUMP(Exp *e, LabelList *targets);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Stm *build(ExpList *kids);
 		~JUMP();
 };
 
@@ -164,6 +186,8 @@ class CJUMP: public Stm{
 	public:
 		CJUMP(int relOp, Exp *left, Exp *right, Label *ifTrue, Label *ifFalse);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Stm *build(ExpList *kids);
 		~CJUMP();
 };
 
@@ -174,6 +198,8 @@ class SEQ: public Stm{
 	public:
 		SEQ(Stm *left, Stm *right);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Stm *build(ExpList *kids);
 		~SEQ();
 };
 
@@ -183,6 +209,8 @@ class LABEL: public Stm{
 	public:
 		LABEL(Label *l);
 		void accept(VisitorArvoreIntermediaria *v);
+		ExpList *kids();
+        Stm *build(ExpList *kids);
 		~LABEL();
 };			
 #endif

@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <typeinfo>
 #include "canonizador.h"
 
 // Blocos Basicos
@@ -5,7 +7,7 @@ BasicBlocks::BasicBlocks(StmList *sl) {
 	this->blocos = NULL;
 	this->stmList = NULL;
     rotulo = new Label("FIM");
-    makeBlocks(stms);
+    makeBlocks(sl);
 
 };
 void BasicBlocks::addStm(Stm *s) {
@@ -18,14 +20,14 @@ void BasicBlocks::addStm(Stm *s) {
 	}			
 };
 void BasicBlocks::doStms(StmList *sl){
-    if (lista == NULL) doStms(new StmList(new JUMP(new NAME(this->rotulo)), NULL));
+    if (sl == NULL) doStms(new StmList(new JUMP(new NAME(this->rotulo)), NULL));
     else{
         // TODO esse typeof naum funciona
-        if (typeof(sl->prim) == typeof(JUMP) || typeof(sl->prim) == typeof(CJUMP){
+        if (typeid(sl->prim).name() == typeid(JUMP).name() || typeid(sl->prim).name() == typeid(CJUMP).name()) {
 	        addStm(sl->prim);
 	        makeBlocks(sl->prox);
         }else{ 
-              if (typeof(sl->prim) == typeof(LABEL)){
+              if (typeid(sl->prim).name() == typeid(LABEL).name()){
                  LABEL *lbl = dynamic_cast<LABEL*>(sl->prim);
 				 doStms(new StmList(new JUMP(new NAME(lbl->l)),sl));
               }else{
@@ -37,7 +39,7 @@ void BasicBlocks::doStms(StmList *sl){
 };
 void BasicBlocks::makeBlocks(StmList *sl) {
     if (sl != NULL){ 
-	    if (typeof(sl->prim) == typeof(LABEL)) {
+	    if (typeid(sl->prim).name() == typeid(LABEL).name()) {
 		    this->stmList = new StmList(sl->prim,NULL);
 		    if (this->blocos == NULL) this->blocos = new StmListList(this->stmList,NULL);  	   				
 			else{
@@ -80,10 +82,6 @@ ExpList *ExpCall::kids(){
 
 Stm *ExpCall::build(ExpList *kids){
 	return new EXP(call->build(kids));
-};
-
-void ExpCall::accept(VisitorArvoreIntermediaria *v){
-    v->visit(this);
 };
 
 ExpCall::~ExpCall(){};

@@ -3,6 +3,14 @@
 #ifndef _canonizador_h
 #define _canonizador_h
 
+class StmListList{
+    public:
+        StmList        *atual;
+        StmListList    *prox;
+    public:
+        StmListList(StmList *a, StmListList *p);
+};
+
 class BasicBlocks {
     public:
         StmListList *blocos;
@@ -13,14 +21,6 @@ class BasicBlocks {
         void addStm(Stm *s);
         void doStms(StmList *sl);
         void makeBlocks(StmList *sl);
-};
-
-class StmListList{
-    public:
-        StmList        *atual;
-        StmListList    *prox;
-    public:
-        StmListList(StmList *a, StmListList *p);
 };
 
 class StmExpList {
@@ -39,7 +39,6 @@ class ExpCall:public Stm {
         ExpCall(CALL *c);
 	    ExpList *kids(); 
 	    Stm *build(ExpList *kids);
-	    void accept(VisitorArvoreIntermediaria *v);
 	    ~ExpCall(); 
 };
 

@@ -9,6 +9,8 @@
 class Exp{
 	public:
 		virtual void accept(VisitorArvoreIntermediaria *v) = 0;
+		virtual ExpList *kids() = 0;
+        virtual Exp *build(ExpList *kids) = 0;
 };
 
 class ExpList {
@@ -24,7 +26,9 @@ class ExpList {
 //Sentencas
 class Stm{
 	public:
-		virtual void accept(VisitorArvoreIntermediaria *v) = 0;			
+        virtual void accept(VisitorArvoreIntermediaria *v) = 0;			
+        virtual ExpList *kids() = 0;
+        virtual Stm *build(ExpList kids) = 0;
 };
 
 class StmList {

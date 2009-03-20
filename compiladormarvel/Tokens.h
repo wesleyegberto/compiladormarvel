@@ -82,6 +82,5 @@
 #define Bool_Exp               324
 #define Bool_Or                325
 #define Bool_And               326
-#define Boo	               326
 /* fim Não Terminais */
 
